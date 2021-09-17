@@ -15,6 +15,8 @@
 		33FD28EC26DD16140022E9C7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 33FD28EA26DD16140022E9C7 /* LaunchScreen.storyboard */; };
 		33FD28F726DD16140022E9C7 /* BluePyroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD28F626DD16140022E9C7 /* BluePyroTests.swift */; };
 		33FD290226DD16140022E9C7 /* BluePyroUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD290126DD16140022E9C7 /* BluePyroUITests.swift */; };
+		33FD291026DD1ACB0022E9C7 /* I-SYST_Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 33FD290F26DD1ACB0022E9C7 /* I-SYST_Logo.png */; };
+		33FD291226DD1AD50022E9C7 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 33FD291126DD1AD50022E9C7 /* logo.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,8 @@
 		33FD28FD26DD16140022E9C7 /* BluePyroUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BluePyroUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		33FD290126DD16140022E9C7 /* BluePyroUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluePyroUITests.swift; sourceTree = "<group>"; };
 		33FD290326DD16140022E9C7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		33FD290F26DD1ACB0022E9C7 /* I-SYST_Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "I-SYST_Logo.png"; sourceTree = "<group>"; };
+		33FD291126DD1AD50022E9C7 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +103,8 @@
 		33FD28DE26DD16130022E9C7 /* BluePyro */ = {
 			isa = PBXGroup;
 			children = (
+				33FD291126DD1AD50022E9C7 /* logo.png */,
+				33FD290F26DD1ACB0022E9C7 /* I-SYST_Logo.png */,
 				33FD28DF26DD16130022E9C7 /* AppDelegate.swift */,
 				33FD28E126DD16130022E9C7 /* SceneDelegate.swift */,
 				33FD28E326DD16130022E9C7 /* ViewController.swift */,
@@ -232,8 +238,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				33FD28EC26DD16140022E9C7 /* LaunchScreen.storyboard in Resources */,
+				33FD291226DD1AD50022E9C7 /* logo.png in Resources */,
 				33FD28E926DD16140022E9C7 /* Assets.xcassets in Resources */,
 				33FD28E726DD16130022E9C7 /* Main.storyboard in Resources */,
+				33FD291026DD1ACB0022E9C7 /* I-SYST_Logo.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,6 +447,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2DRDT73N7F;
 				INFOPLIST_FILE = BluePyro/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -458,6 +467,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 2DRDT73N7F;
 				INFOPLIST_FILE = BluePyro/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

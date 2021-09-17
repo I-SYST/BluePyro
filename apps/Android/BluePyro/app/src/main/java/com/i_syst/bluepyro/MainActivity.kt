@@ -7,6 +7,7 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.os.Bundle
+import android.system.Os.remove
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     private var mBTimeLabel: TextView? = null
     private var mTitleLabel : TextView? = null
     private var mRawLabel : TextView? = null
+    private var mAdvCountLabel: TextView? = null
     private var mThreshLabel : TextView? = null
     private var mIdLabel : TextView? = null
     private var mPulseCntLabel : TextView? = null
@@ -63,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     var mWeight = 0F
     var mDetCnt = 0
     var mAdvCnt = 0
-    var mName = ByteArray(8)
+    //var mName = ByteArray(8)
     var mModify : Boolean = false
     var mButtonClicked = 0
 
@@ -83,8 +85,7 @@ class MainActivity : AppCompatActivity() {
                 //Log.i(TAG, "**ACTION_SERVICE_DISCOVERED**$status")
                 //Get the characteristic from the discovered gatt server
                 if (mButtonClicked == 0) {
-                    val service =
-                        gatt.getService(BLUEPYRO_SERVICE_UUID)
+                    val service = gatt.getService(BLUEPYRO_SERVICE_UUID)
                     mCfgChar = service.getCharacteristic(BLUEPYRO_CFGCHAR_UUID)
                     mCfgChar?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 
@@ -101,6 +102,15 @@ class MainActivity : AppCompatActivity() {
 
                     val bytes = ByteArray(4)
                     ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).putInt(cfgval)
+                    var mName = ByteArray(8)
+
+                    mName = mIdLabel?.text.toString().toByteArray()
+                    if (mName.size<8) {
+                        val zerosbytes = ByteArray(8-mName.size)
+                        mName += zerosbytes
+                    }else if(mName.size>8){
+                        mName = Arrays.copyOfRange(mName,  0,  8)
+                    }
                     val appData = mName + bytes
 
                     mCfgChar?.setValue(appData)
@@ -315,6 +325,8 @@ class MainActivity : AppCompatActivity() {
         mBTimeLabel = findViewById<View>(R.id.btimeLabel) as TextView
         mTitleLabel = findViewById<View>(R.id.titleTextView) as TextView
         mIdLabel = findViewById<View>(R.id.idTextView) as TextView
+        mRawLabel = findViewById<TextView>(R.id.countLabel) as TextView
+        mAdvCountLabel = findViewById<TextView>(R.id.AdvCountLabel) as TextView
 /*        mAdapter = DeviceListAdapter(this, R.layout.device_list_content)
         val listView =
             findViewById<View>(R.id.device_listview) as ListView
@@ -421,15 +433,18 @@ class MainActivity : AppCompatActivity() {
                     //mName = manuf.copyOfRange(2, 10)
 
                     mAdvCnt++
-                    mIdLabel?.text = v
+
                     if (manuf[1].toInt() == 0) {
                         mIdLabel?.setBackgroundColor(0xffffffff.toInt())
                     } else {
                         mDetCnt++
                         mIdLabel?.setBackgroundColor(0xffff4444.toInt())
+                        var s = String.format("%d", mDetCnt)
+                        mRawLabel?.text = s
                     }
 
                     if (mModify == false) {
+                        mIdLabel?.text = v
                         var swpm = findViewById<View>(R.id.switchPulseMode) as Switch
                         val p = manuf[2].toUInt() and 0x1u
                         if (p != 0u) {
@@ -460,9 +475,9 @@ class MainActivity : AppCompatActivity() {
                         mBTimeLabel?.text = String.format("%d", bt)
                         mThreshLabel?.text = String.format("%d", thr)
 
-                        var s = String.format("%d", mDetCnt)
-                        mRawLabel?.text = s
-                        s = String.format("%d", mAdvCnt)//(v shr 14) and 0x3fff)
+                        var s = String.format("%d", mAdvCnt)
+                        mAdvCountLabel?.text = s
+                        //s = String.format("%d", mAdvCnt)//(v shr 14) and 0x3fff)
                     }
                     //mPirLabel?.text = s
                     //s = v.toString()

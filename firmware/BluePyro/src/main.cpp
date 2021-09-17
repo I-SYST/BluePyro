@@ -60,7 +60,7 @@ SOFTWARE.
 #include "blue_pyro.h"
 #include "board.h"
 
-void PydIntHandler(int IntNo);
+void PydIntHandler(int IntNo, void *pCtx);
 
 #define BLUEPYRO_VERS		0
 
@@ -608,7 +608,7 @@ void PyDetectChedHandler(void * p_event_data, uint16_t event_size)
 }
 #endif
 
-void PydIntHandler(int IntNo)
+void PydIntHandler(int IntNo, void *pCtx)
 {
 	uint64_t d = 0;
 
@@ -661,7 +661,7 @@ void PydIntHandler(int IntNo)
 
 
 #endif
-		IOPinEnableInterrupt(PYD_INT_NO, APP_IRQ_PRIORITY_MID, PYD_DL_PORT, PYD_DL_PIN, IOPINSENSE_HIGH_TRANSITION, PydIntHandler);
+		IOPinEnableInterrupt(PYD_INT_NO, APP_IRQ_PRIORITY_MID, PYD_DL_PORT, PYD_DL_PIN, IOPINSENSE_HIGH_TRANSITION, PydIntHandler, NULL);
 		g_Timer.EnableTimerTrigger(0, 250UL, TIMER_TRIG_TYPE_SINGLE);
 	}
 }
@@ -787,7 +787,7 @@ void HardwareInit()
 
 	msDelay(10);
 
-	IOPinEnableInterrupt(PYD_INT_NO, APP_IRQ_PRIORITY_MID, PYD_DL_PORT, PYD_DL_PIN, IOPINSENSE_HIGH_TRANSITION, PydIntHandler);
+	IOPinEnableInterrupt(PYD_INT_NO, APP_IRQ_PRIORITY_MID, PYD_DL_PORT, PYD_DL_PIN, IOPINSENSE_HIGH_TRANSITION, PydIntHandler, NULL);
 
 	msDelay(10);
 }
