@@ -1,0 +1,598 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		33FD28E026DD16130022E9C7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD28DF26DD16130022E9C7 /* AppDelegate.swift */; };
+		33FD28E226DD16130022E9C7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD28E126DD16130022E9C7 /* SceneDelegate.swift */; };
+		33FD28E426DD16130022E9C7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD28E326DD16130022E9C7 /* ViewController.swift */; };
+		33FD28E726DD16130022E9C7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 33FD28E526DD16130022E9C7 /* Main.storyboard */; };
+		33FD28E926DD16140022E9C7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 33FD28E826DD16140022E9C7 /* Assets.xcassets */; };
+		33FD28EC26DD16140022E9C7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 33FD28EA26DD16140022E9C7 /* LaunchScreen.storyboard */; };
+		33FD28F726DD16140022E9C7 /* BluePyroTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD28F626DD16140022E9C7 /* BluePyroTests.swift */; };
+		33FD290226DD16140022E9C7 /* BluePyroUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD290126DD16140022E9C7 /* BluePyroUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		33FD28F326DD16140022E9C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 33FD28D426DD16130022E9C7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 33FD28DB26DD16130022E9C7;
+			remoteInfo = BluePyro;
+		};
+		33FD28FE26DD16140022E9C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 33FD28D426DD16130022E9C7 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 33FD28DB26DD16130022E9C7;
+			remoteInfo = BluePyro;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		33FD28DC26DD16130022E9C7 /* BluePyro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BluePyro.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		33FD28DF26DD16130022E9C7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		33FD28E126DD16130022E9C7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		33FD28E326DD16130022E9C7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		33FD28E626DD16130022E9C7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		33FD28E826DD16140022E9C7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		33FD28EB26DD16140022E9C7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		33FD28ED26DD16140022E9C7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		33FD28F226DD16140022E9C7 /* BluePyroTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BluePyroTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		33FD28F626DD16140022E9C7 /* BluePyroTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluePyroTests.swift; sourceTree = "<group>"; };
+		33FD28F826DD16140022E9C7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		33FD28FD26DD16140022E9C7 /* BluePyroUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BluePyroUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		33FD290126DD16140022E9C7 /* BluePyroUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluePyroUITests.swift; sourceTree = "<group>"; };
+		33FD290326DD16140022E9C7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		33FD28D926DD16130022E9C7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		33FD28EF26DD16140022E9C7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		33FD28FA26DD16140022E9C7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		33FD28D326DD16130022E9C7 = {
+			isa = PBXGroup;
+			children = (
+				33FD28DE26DD16130022E9C7 /* BluePyro */,
+				33FD28F526DD16140022E9C7 /* BluePyroTests */,
+				33FD290026DD16140022E9C7 /* BluePyroUITests */,
+				33FD28DD26DD16130022E9C7 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		33FD28DD26DD16130022E9C7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				33FD28DC26DD16130022E9C7 /* BluePyro.app */,
+				33FD28F226DD16140022E9C7 /* BluePyroTests.xctest */,
+				33FD28FD26DD16140022E9C7 /* BluePyroUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		33FD28DE26DD16130022E9C7 /* BluePyro */ = {
+			isa = PBXGroup;
+			children = (
+				33FD28DF26DD16130022E9C7 /* AppDelegate.swift */,
+				33FD28E126DD16130022E9C7 /* SceneDelegate.swift */,
+				33FD28E326DD16130022E9C7 /* ViewController.swift */,
+				33FD28E526DD16130022E9C7 /* Main.storyboard */,
+				33FD28E826DD16140022E9C7 /* Assets.xcassets */,
+				33FD28EA26DD16140022E9C7 /* LaunchScreen.storyboard */,
+				33FD28ED26DD16140022E9C7 /* Info.plist */,
+			);
+			path = BluePyro;
+			sourceTree = "<group>";
+		};
+		33FD28F526DD16140022E9C7 /* BluePyroTests */ = {
+			isa = PBXGroup;
+			children = (
+				33FD28F626DD16140022E9C7 /* BluePyroTests.swift */,
+				33FD28F826DD16140022E9C7 /* Info.plist */,
+			);
+			path = BluePyroTests;
+			sourceTree = "<group>";
+		};
+		33FD290026DD16140022E9C7 /* BluePyroUITests */ = {
+			isa = PBXGroup;
+			children = (
+				33FD290126DD16140022E9C7 /* BluePyroUITests.swift */,
+				33FD290326DD16140022E9C7 /* Info.plist */,
+			);
+			path = BluePyroUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		33FD28DB26DD16130022E9C7 /* BluePyro */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 33FD290626DD16140022E9C7 /* Build configuration list for PBXNativeTarget "BluePyro" */;
+			buildPhases = (
+				33FD28D826DD16130022E9C7 /* Sources */,
+				33FD28D926DD16130022E9C7 /* Frameworks */,
+				33FD28DA26DD16130022E9C7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BluePyro;
+			productName = BluePyro;
+			productReference = 33FD28DC26DD16130022E9C7 /* BluePyro.app */;
+			productType = "com.apple.product-type.application";
+		};
+		33FD28F126DD16140022E9C7 /* BluePyroTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 33FD290926DD16140022E9C7 /* Build configuration list for PBXNativeTarget "BluePyroTests" */;
+			buildPhases = (
+				33FD28EE26DD16140022E9C7 /* Sources */,
+				33FD28EF26DD16140022E9C7 /* Frameworks */,
+				33FD28F026DD16140022E9C7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				33FD28F426DD16140022E9C7 /* PBXTargetDependency */,
+			);
+			name = BluePyroTests;
+			productName = BluePyroTests;
+			productReference = 33FD28F226DD16140022E9C7 /* BluePyroTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		33FD28FC26DD16140022E9C7 /* BluePyroUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 33FD290C26DD16140022E9C7 /* Build configuration list for PBXNativeTarget "BluePyroUITests" */;
+			buildPhases = (
+				33FD28F926DD16140022E9C7 /* Sources */,
+				33FD28FA26DD16140022E9C7 /* Frameworks */,
+				33FD28FB26DD16140022E9C7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				33FD28FF26DD16140022E9C7 /* PBXTargetDependency */,
+			);
+			name = BluePyroUITests;
+			productName = BluePyroUITests;
+			productReference = 33FD28FD26DD16140022E9C7 /* BluePyroUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		33FD28D426DD16130022E9C7 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1250;
+				LastUpgradeCheck = 1250;
+				TargetAttributes = {
+					33FD28DB26DD16130022E9C7 = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+					33FD28F126DD16140022E9C7 = {
+						CreatedOnToolsVersion = 12.5.1;
+						TestTargetID = 33FD28DB26DD16130022E9C7;
+					};
+					33FD28FC26DD16140022E9C7 = {
+						CreatedOnToolsVersion = 12.5.1;
+						TestTargetID = 33FD28DB26DD16130022E9C7;
+					};
+				};
+			};
+			buildConfigurationList = 33FD28D726DD16130022E9C7 /* Build configuration list for PBXProject "BluePyro" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 33FD28D326DD16130022E9C7;
+			productRefGroup = 33FD28DD26DD16130022E9C7 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				33FD28DB26DD16130022E9C7 /* BluePyro */,
+				33FD28F126DD16140022E9C7 /* BluePyroTests */,
+				33FD28FC26DD16140022E9C7 /* BluePyroUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		33FD28DA26DD16130022E9C7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33FD28EC26DD16140022E9C7 /* LaunchScreen.storyboard in Resources */,
+				33FD28E926DD16140022E9C7 /* Assets.xcassets in Resources */,
+				33FD28E726DD16130022E9C7 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		33FD28F026DD16140022E9C7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		33FD28FB26DD16140022E9C7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		33FD28D826DD16130022E9C7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33FD28E426DD16130022E9C7 /* ViewController.swift in Sources */,
+				33FD28E026DD16130022E9C7 /* AppDelegate.swift in Sources */,
+				33FD28E226DD16130022E9C7 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		33FD28EE26DD16140022E9C7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33FD28F726DD16140022E9C7 /* BluePyroTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		33FD28F926DD16140022E9C7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				33FD290226DD16140022E9C7 /* BluePyroUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		33FD28F426DD16140022E9C7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 33FD28DB26DD16130022E9C7 /* BluePyro */;
+			targetProxy = 33FD28F326DD16140022E9C7 /* PBXContainerItemProxy */;
+		};
+		33FD28FF26DD16140022E9C7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 33FD28DB26DD16130022E9C7 /* BluePyro */;
+			targetProxy = 33FD28FE26DD16140022E9C7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		33FD28E526DD16130022E9C7 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				33FD28E626DD16130022E9C7 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		33FD28EA26DD16140022E9C7 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				33FD28EB26DD16140022E9C7 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		33FD290426DD16140022E9C7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		33FD290526DD16140022E9C7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		33FD290726DD16140022E9C7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2DRDT73N7F;
+				INFOPLIST_FILE = BluePyro/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "i-syst.BluePyro";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		33FD290826DD16140022E9C7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2DRDT73N7F;
+				INFOPLIST_FILE = BluePyro/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "i-syst.BluePyro";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		33FD290A26DD16140022E9C7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2DRDT73N7F;
+				INFOPLIST_FILE = BluePyroTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "i-syst.BluePyroTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BluePyro.app/BluePyro";
+			};
+			name = Debug;
+		};
+		33FD290B26DD16140022E9C7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2DRDT73N7F;
+				INFOPLIST_FILE = BluePyroTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "i-syst.BluePyroTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BluePyro.app/BluePyro";
+			};
+			name = Release;
+		};
+		33FD290D26DD16140022E9C7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2DRDT73N7F;
+				INFOPLIST_FILE = BluePyroUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "i-syst.BluePyroUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BluePyro;
+			};
+			name = Debug;
+		};
+		33FD290E26DD16140022E9C7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 2DRDT73N7F;
+				INFOPLIST_FILE = BluePyroUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "i-syst.BluePyroUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BluePyro;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		33FD28D726DD16130022E9C7 /* Build configuration list for PBXProject "BluePyro" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				33FD290426DD16140022E9C7 /* Debug */,
+				33FD290526DD16140022E9C7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		33FD290626DD16140022E9C7 /* Build configuration list for PBXNativeTarget "BluePyro" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				33FD290726DD16140022E9C7 /* Debug */,
+				33FD290826DD16140022E9C7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		33FD290926DD16140022E9C7 /* Build configuration list for PBXNativeTarget "BluePyroTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				33FD290A26DD16140022E9C7 /* Debug */,
+				33FD290B26DD16140022E9C7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		33FD290C26DD16140022E9C7 /* Build configuration list for PBXNativeTarget "BluePyroUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				33FD290D26DD16140022E9C7 /* Debug */,
+				33FD290E26DD16140022E9C7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 33FD28D426DD16130022E9C7 /* Project object */;
+}
