@@ -40,7 +40,7 @@ SOFTWARE.
 #include "app_scheduler.h"
 #include "nrf_sdh.h"
 #include "fds.h"
-#include "nrf_power.h"
+//#include "nrf_power.h"
 
 #include "istddef.h"
 #include "idelay.h"
