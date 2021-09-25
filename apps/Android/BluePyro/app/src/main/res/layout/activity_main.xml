@@ -36,6 +36,28 @@
         app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
 
     <TextView
+        android:id="@+id/textView11"
+        android:layout_width="164dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:text="Select device :"
+        android:textAlignment="textEnd"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/idTextView" />
+    <Spinner
+        android:id="@+id/spinnerDevice"
+        android:layout_width="164dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
+        android:textSize="24sp"
+        android:textColor="@android:color/black"
+        android:textColorHint="@android:color/darker_gray"
+        app:layout_constraintStart_toEndOf="@+id/textView11"
+        app:layout_constraintTop_toBottomOf="@+id/idTextView" />
+    <TextView
         android:id="@+id/textView8"
         android:layout_width="164dp"
         android:layout_height="45dp"
@@ -52,7 +74,8 @@
         android:layout_width="0dp"
         android:layout_height="45dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
+
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="24dp"
         android:inputType="numberDecimal"
         android:text="5"
@@ -61,7 +84,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/idTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerDevice" />
 
     <Switch
         android:id="@+id/switchHpf"
@@ -101,12 +124,12 @@
         android:layout_width="164dp"
         android:layout_height="45dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:text="Threshold :"
         android:textAlignment="textEnd"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/idTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/spinnerDevice" />
 
     <Button
         android:id="@+id/button"

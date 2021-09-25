@@ -7,10 +7,10 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Context
 import android.os.Bundle
-import android.system.Os.remove
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -18,8 +18,43 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.charset.Charset
 import java.util.*
+import android.widget.ArrayAdapter
+
+import java.util.ArrayList
+import android.R.attr.name
+import android.widget.AdapterView
+
+import android.widget.AdapterView.OnItemSelectedListener
+
+import android.R.attr.name
+import android.bluetooth.BluetoothDevice
+
+import android.widget.Toast
+
+import android.R.attr.name
 
 
+
+
+
+
+
+
+
+
+
+internal class Device(var deviceName: String, var deviceAddress: String) {
+
+    override fun toString(): String {
+        return "$deviceName"
+    }
+
+    override fun equals(obj: Any?): Boolean {
+        if (this === obj) return true
+        if (obj !is Device) return false
+        return deviceAddress == obj.deviceAddress
+    }
+}
 class MainActivity : AppCompatActivity() {
 
     val BLUEPYRO_SERVICE_UUID =
@@ -53,6 +88,9 @@ class MainActivity : AppCompatActivity() {
     private var mWinTimeLabel : TextView? = null
     private var mUpdateButton : Button? = null
     private var mDFUButton : Button? = null
+    private var mDeviceSpiner : Spinner? = null
+    private var mDeviceList: MutableList<Device>? = null
+    private var dataAdapter: ArrayAdapter<Device>? = null
     var zeroWeight = 0
     private var mZeroBut : Button? = null
     var mAvrStart : Boolean = false
@@ -305,8 +343,8 @@ class MainActivity : AppCompatActivity() {
                 mUpdateButton?.text = "MODIFY"
             }
             else {
-                mModify = true;
-                mUpdateButton?.text = "UPDATE"
+                //mModify = true;
+                //mUpdateButton?.text = "UPDATE"
             }
         }
 
@@ -315,6 +353,38 @@ class MainActivity : AppCompatActivity() {
             mButtonClicked = 1
             if (mBluetoothDevice != null) {
                 mBleGatt = mBluetoothDevice?.connectGatt(mCtx, false, mGattCallback)
+            }
+        }
+
+        mDeviceList = ArrayList()
+        mDeviceSpiner = findViewById<View>(R.id.spinnerDevice) as Spinner
+        dataAdapter = ArrayAdapter(this, R.layout.spinner_item, mDeviceList as ArrayList<Device>)
+        dataAdapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        mDeviceSpiner!!.adapter = dataAdapter
+
+        
+        mDeviceSpiner!!.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(
+                parentView: AdapterView<*>?,
+                selectedItemView: View,
+                position: Int,
+                id: Long
+            ) {
+                if (mDeviceList!= null) {
+                    val spinnerDevice: Device = mDeviceSpiner!!.selectedItem as Device
+
+                    val address = spinnerDevice.deviceAddress
+                    val name = spinnerDevice.deviceName
+                    mIdLabel?.text = name
+                    mBluetoothDevice = mBluetoothAdapter!!.getRemoteDevice(address)
+
+                    mModify = true;
+                    mUpdateButton?.text = "UPDATE"
+                }
+            }
+
+            override fun onNothingSelected(parentView: AdapterView<*>?) {
+
             }
         }
 
@@ -362,7 +432,10 @@ class MainActivity : AppCompatActivity() {
             val device = result.device
             val scanRecord = result.scanRecord
             val scanData = scanRecord!!.bytes
-            val name = scanRecord.deviceName
+            //val name = scanRecord.deviceName
+
+            val address = device.address
+
             val deviceID: Long = 0
             val manuf = scanRecord.getManufacturerSpecificData(0x0177)
 
@@ -420,7 +493,21 @@ class MainActivity : AppCompatActivity() {
                 }
                 BLEADV_MANDATA_TYPE_APP -> {
                     val v = String(manuf, 6, manuf.size - 6, Charset.defaultCharset())
+                    val name = v
+                    if (name != null) {
+                        if (mDeviceList!!.isEmpty()) {
+                            mDeviceList!!.add(Device(name,address))
+                        } else {
+                            if (!mDeviceList!!.contains(Device(name, address))) {
+                                mDeviceList!!.add(Device(name,address))
+                            }else {
+                                mDeviceList!!.removeAt(mDeviceList!!.indexOf(Device(name, address)))
+                                mDeviceList!!.add(Device(name,address))
+                            }
 
+                        }
+                        dataAdapter!!.notifyDataSetChanged()
+                    }
                     //val v = ByteBuffer.wrap(
                     //    manuf,
                     //    1,
