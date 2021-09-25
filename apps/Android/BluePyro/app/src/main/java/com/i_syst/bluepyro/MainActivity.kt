@@ -420,6 +420,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 BLEADV_MANDATA_TYPE_APP -> {
                     val v = String(manuf, 6, manuf.size - 6, Charset.defaultCharset())
+
                     //val v = ByteBuffer.wrap(
                     //    manuf,
                     //    1,
@@ -436,9 +437,11 @@ class MainActivity : AppCompatActivity() {
 
                     if (manuf[1].toInt() == 0) {
                         mIdLabel?.setBackgroundColor(0xffffffff.toInt())
+
                     } else {
                         mDetCnt++
                         mIdLabel?.setBackgroundColor(0xffff4444.toInt())
+
                         var s = String.format("%d", mDetCnt)
                         mRawLabel?.text = s
                     }

@@ -118,7 +118,7 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
                 var temp = UInt8(0)
                 manData.getBytes(&temp, range: NSMakeRange(3, 1))
                 
-                var bytes: [UInt8] = [0,0,0,0,0,0]
+                var bytes: [UInt8] = [0,0,0,0,0,0,0,0]
                 manData.getBytes(&bytes, range: NSMakeRange(8, manData.length-8))
                 
                 let name = String(bytes: bytes, encoding: .utf8)
@@ -253,8 +253,8 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
                            
                            self.mBluePyro.writeValue(appData, for: mDfuChar, type: .withoutResponse)
                        }
-                       self.bleCentral.cancelPeripheralConnection(self.mBluePyro)
-                       mModify = false
+                       //self.bleCentral.cancelPeripheralConnection(self.mBluePyro)
+                       //mModify = false
                    }
                     
                 } else if characteristic.uuid == BluePyroPeripheral.BLUEPYRO_CFGCHAR_UUID {
@@ -291,31 +291,48 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
                         let cfgval2 = Int32(cfgval)
                         let bytes = withUnsafeBytes(of: cfgval2.bigEndian, Array.init)
                         print(bytes)
-                        let str = mNameEdit.text ?? ""
-                       
-                        let nameData = str.data(using: String.Encoding.utf8)!
-                        print(String(data: nameData, encoding: String.Encoding.utf8))
                         let appData =  Data(bytes)
-                        let zeros: [UInt8] = [0,0,0,0]
                         let messageData = NSMutableData() //or var messageData : NSMutableData = NSMutableData()
-                        messageData.append(nameData)
-                        messageData.append(Data(zeros))
-                        messageData.append(appData)
+                        let str = mNameEdit.text ?? ""
+                        print(str)
+                        var nameData = str.data(using: String.Encoding.utf8)!
+                        print(nameData.count)
+                        //print(String(data: nameData, encoding: String.Encoding.utf8))
+                        if nameData.count<8 {
+                            //let zeros: [UInt8] = [0,0,0,0]
+                            //let zerosArr = [UInt8](count: 8-nameData.count, repeatedValue: 0)
+                            let zerosArr = Data(Array(repeating: 0, count: 8-nameData.count))
+                            messageData.append(nameData)
+                            messageData.append(zerosArr)
+                            messageData.append(appData)
+                        }else if nameData.count>8{
+                            nameData.removeSubrange(8..<nameData.count)
+                            messageData.append(nameData)
+                            messageData.append(appData)
+                        }else if nameData.count==8{
+                            messageData.append(nameData)
+                            messageData.append(appData)
+                        }
                         
                         //print(messageData)
                         // Check if it has the write property
-                        if mCfgChar.properties.contains(.writeWithoutResponse) && self.mBluePyro != nil {
+                        //if mCfgChar.properties.contains(.writeWithoutResponse) && self.mBluePyro != nil {
                         if self.mBluePyro != nil {
+                            self.mBluePyro.writeValue(messageData as Data, for: mCfgChar, type: .withResponse)
                             
-                            self.mBluePyro.writeValue(messageData as Data, for: mCfgChar, type: .withoutResponse)
                         }
                         
-                        self.bleCentral.cancelPeripheralConnection(self.mBluePyro)
-                        mModify = false
+                        //self.bleCentral.cancelPeripheralConnection(self.mBluePyro)
+                        //mModify = false
 
                     }
                 }
             }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                print("Update successful")
+                self.bleCentral.cancelPeripheralConnection(self.mBluePyro)
+                self.mModify = false
+               })
             
              
             
@@ -323,7 +340,7 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
     }
     
     // Button click even handle
-    @IBAction func mDFUButtonClick(_ sender: Any) {
+    @IBAction func mDFUButtonClick(_ sender: UIButton) {
         print("DFU button clicked")
         mButtonClicked = 1
         if self.mBluePyro != nil {
@@ -332,7 +349,7 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
         //self.bleCentral.cancelPeripheralConnection(self.mBluePyro)
     }
     
-    @IBAction func mUpdateButtonClick(_ sender: Any) {
+    @IBAction func mUpdateButtonClick(_ sender: UIButton) {
         print("Update button clicked")
         
         if mModify == true{
@@ -349,11 +366,9 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
         }
     }
     
-    
-    
-    
-    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        view.endEditing(true)
+    }
 
-}
 
 }
