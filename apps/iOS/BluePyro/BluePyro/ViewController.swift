@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreBluetooth
+
 class BluePyroPeripheral: NSObject {
 
         public static let BLUEPYRO_SERVICE_UUID   = CBUUID.init(string: "a008FFE0-01fb-4109-8a0a-1816898a6725")
@@ -22,10 +23,7 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
     var mName: [UInt8] = [0,0,0,0,0,0,0,0]
     //var mDfuChar: CBCharacteristic
     //var mCfgChar: CBCharacteristic
-    @IBOutlet weak var nameLabel: UILabel!
-    
-    @IBOutlet weak var uuidLable: UILabel!
-    @IBOutlet weak var IdLabel: UILabel!
+   
     @IBOutlet weak var AdvCountLabel: UILabel!
     @IBOutlet weak var countLabel: UILabel!
     
@@ -40,8 +38,10 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
     @IBOutlet weak var mDFUButton: UIButton!
     @IBOutlet weak var mSwitchHpf: UISwitch!
     @IBOutlet weak var mSwitchPulseMode: UISwitch!
+    @IBOutlet weak var mPickerDevice: UIPickerView!
     
-    
+    var pickerData: [String] = [String]()
+    var DeviceList: [CBPeripheral] = []
     var bleCentral : CBCentralManager!
     var mBluePyro: CBPeripheral!
     //@IBOutlet weak var IDLabel: NSTextField!
@@ -50,6 +50,8 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         bleCentral = CBCentralManager(delegate: self, queue: DispatchQueue.main)
+        mPickerDevice.dataSource = self
+        mPickerDevice.delegate = self
     }
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -93,8 +95,7 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
                 self.mBluePyro.delegate = self
                 
                 
-                nameLabel.text = self.mBluePyro.name
-                uuidLable.text = self.mBluePyro.identifier.uuidString
+                
                 //print(self.mBluePyro.identifier)
                 //self.bleCentral.connect(self.mBluePyro, options: nil)
                 if advertisementData[CBAdvertisementDataManufacturerDataKey] == nil {
@@ -111,8 +112,6 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
                 manData.getBytes(&manId, range: NSMakeRange(0, 2))
                 if manId != 0x177 {
                     return
-                }else {
-                    IdLabel.text = "ManuID: " + String(format: "%d", manId)
                 }
               
                 var temp = UInt8(0)
@@ -124,7 +123,42 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
                 let name = String(bytes: bytes, encoding: .utf8)
                 if name != nil && mModify == false {
                     mNameEdit.text = name
+                    //let device_name = name! + peripheral.identifier.uuidString
+                    //let device = Device(deviceName: name ?? " ", deviceAddress: peripheral.identifier.uuidString)
                     
+                    if pickerData.count == 0{
+                        pickerData.append(name ?? " ")
+                        mPickerDevice.reloadAllComponents()
+                        DeviceList.append(peripheral)
+                    }else{
+                        //let results = DeviceList.filter { $0.deviceAddress ==  device.deviceAddress}
+                        //let exists = results.isEmpty == false
+                        
+                        /*if DeviceList.contains(where: { device in device.deviceAddress == peripheral.identifier.uuidString }) {
+                            print("device exists in the list")
+                        } else {
+                            print("device does not exists in the list")
+                        }*/
+                        
+                        if let device_in_list = DeviceList.enumerated().first(where: {$0.element.identifier == peripheral.identifier}) {
+                           // do something with foo.offset and foo.element
+                            print("device exists in the list: " + String(format: "%d", device_in_list.offset))
+                            DeviceList.remove(at: device_in_list.offset)
+                            pickerData.remove(at: device_in_list.offset)
+                            
+                            pickerData.append(name ?? " ")
+                            mPickerDevice.reloadAllComponents()
+                            DeviceList.append(peripheral)
+                            
+                            
+                        } else {
+                           // item could not be found
+                            print("device does not exists in the list")
+                            pickerData.append(name ?? " ")
+                            mPickerDevice.reloadAllComponents()
+                            DeviceList.append(peripheral)
+                        }
+                    }
                     if temp == 0 {
                         mNameEdit.backgroundColor = UIColor.white
                         mWinTimeLabel.text = String(format: "%d", 0)
@@ -371,4 +405,29 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
     }
 
 
+}
+
+extension ViewController: UIPickerViewDataSource{
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return pickerData.count
+    }
+}
+
+extension ViewController: UIPickerViewDelegate{
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return pickerData[row]
+    }
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        mNameEdit.text = pickerData[row]
+        self.mBluePyro = DeviceList[row]
+        print(self.mBluePyro.identifier.uuidString)
+        print("\n")
+        
+        mModify = true
+        mUpdateButton.setTitle("UPDATE", for: UIControl.State.normal)
+    }
 }

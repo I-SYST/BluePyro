@@ -106,6 +106,7 @@ class MainActivity : AppCompatActivity() {
     //var mName = ByteArray(8)
     var mModify : Boolean = false
     var mButtonClicked = 0
+    var mDeviceSelected : Boolean = false
 
     private val mGattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {//Change in connection state
@@ -343,8 +344,8 @@ class MainActivity : AppCompatActivity() {
                 mUpdateButton?.text = "MODIFY"
             }
             else {
-                //mModify = true;
-                //mUpdateButton?.text = "UPDATE"
+                mModify = true;
+                mUpdateButton?.text = "UPDATE"
             }
         }
 
@@ -370,23 +371,31 @@ class MainActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                if (mDeviceList!= null) {
-                    val spinnerDevice: Device = mDeviceSpiner!!.selectedItem as Device
+                if(mDeviceSelected) {
 
-                    val address = spinnerDevice.deviceAddress
-                    val name = spinnerDevice.deviceName
-                    mIdLabel?.text = name
-                    mBluetoothDevice = mBluetoothAdapter!!.getRemoteDevice(address)
+                    if (mDeviceList != null) {
+                        val spinnerDevice: Device = mDeviceSpiner!!.selectedItem as Device
 
-                    mModify = true;
-                    mUpdateButton?.text = "UPDATE"
+                        val address = spinnerDevice.deviceAddress
+                        val name = spinnerDevice.deviceName
+                        mIdLabel?.text = name
+                        mBluetoothDevice = mBluetoothAdapter!!.getRemoteDevice(address)
+
+                        mModify = true;
+                        mUpdateButton?.text = "UPDATE"
+                    }
+                    //mDeviceSelected = false
+                }else{
+                    mDeviceSelected = true
                 }
             }
 
             override fun onNothingSelected(parentView: AdapterView<*>?) {
 
+
             }
         }
+
 
         mPulseCntLabel = findViewById<View>(R.id.pulsecntLabel) as TextView
         mWinTimeLabel = findViewById<View>(R.id.wtimeLabel) as TextView
@@ -500,12 +509,15 @@ class MainActivity : AppCompatActivity() {
                         } else {
                             if (!mDeviceList!!.contains(Device(name, address))) {
                                 mDeviceList!!.add(Device(name,address))
+
                             }else {
                                 mDeviceList!!.removeAt(mDeviceList!!.indexOf(Device(name, address)))
                                 mDeviceList!!.add(Device(name,address))
+
                             }
 
                         }
+                        mIdLabel?.text = v
                         dataAdapter!!.notifyDataSetChanged()
                     }
                     //val v = ByteBuffer.wrap(
