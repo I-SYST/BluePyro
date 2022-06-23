@@ -75,7 +75,7 @@ void PydIntHandler(int IntNo, void *pCtx);
 
 #define MANUFACTURER_NAME               "I-SYST inc."                       /**< Manufacturer. Will be passed to Device Information Service. */
 
-#define MODEL_NAME                      "M3292"                        /**< Model number. Will be passed to Device Information Service. */
+#define MODEL_NAME                      "M3225"                        /**< Model number. Will be passed to Device Information Service. */
 
 #define MANUFACTURER_ID                 ISYST_BLUETOOTH_ID                  /**< Manufacturer ID, part of System ID. Will be passed to Device Information Service. */
 #define ORG_UNIQUE_ID                   ISYST_BLUETOOTH_ID                  /**< Organizational Unique ID, part of System ID. Will be passed to Device Information Service. */
@@ -431,7 +431,7 @@ void PyroCfgUpdateSched(void * p_event_data, uint16_t event_size)
 
 void BluePyroCfgWrSrvcCallback(BLESRVC *pBlueIOSvc, uint8_t *pData, int Offset, int Len)
 {
-	int len = min(Len, sizeof(APP_DATA));
+	int len = min((size_t)Len, sizeof(APP_DATA));
 
 	if (Len >= sizeof(APP_DATA))
 	{
