@@ -35,6 +35,7 @@ SOFTWARE.
 #include <string.h>
 #include <math.h>
 #include <atomic>
+#include <stdio.h>
 
 #include "app_util_platform.h"
 #include "app_scheduler.h"
@@ -90,6 +91,12 @@ void PydIntHandler(int IntNo, void *pCtx);
 
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(8, UNIT_1_25_MS)     /**< Minimum acceptable connection interval (20 ms), Connection interval uses 1.25 ms units. */
 #define MAX_CONN_INTERVAL               MSEC_TO_UNITS(40, UNIT_1_25_MS)     /**< Maximum acceptable connection interval (75 ms), Connection interval uses 1.25 ms units. */
+
+#define BLE_UART_UUID_BASE			BLUEIO_UUID_BASE
+
+#define BLE_UART_UUID_SERVICE		BLUEIO_UUID_UART_SERVICE		//!< BlueIO default service
+#define BLE_UART_UUID_TX_CHAR		BLUEIO_UUID_UART_TX_CHAR		//!< Data characteristic
+#define BLE_UART_UUID_RX_CHAR		BLUEIO_UUID_UART_RX_CHAR		//!< Command control characteristic
 
 #pragma pack(push, 1)
 
@@ -162,8 +169,66 @@ alignas(4) static fds_record_t const g_AppDataRecord =
     }
 };
 
+#ifdef RAW_DATA
+
+static const char s_RxCharDescString[] = {
+	"UART Rx characteristic",
+};
+
+static const char s_TxCharDescString[] = {
+	"UART Tx characteristic",
+};
+
+void UartTxSrvcCallback(BLESRVC *pBlueIOSvc, uint8_t *pData, int Offset, int Len);
+
 /// Characteristic definitions
-BLESRVC_CHAR g_BluePyroChars[] = {
+BleSrvcChar_t g_UartChars[] = {
+	{
+		// Read characteristic
+		.Uuid = BLE_UART_UUID_RX_CHAR,
+		.MaxDataLen = 64,
+		.Property =
+		BLESVC_CHAR_PROP_READ | BLESVC_CHAR_PROP_NOTIFY | BLESVC_CHAR_PROP_VARLEN,
+		.pDesc = s_RxCharDescString,		// char UTF-8 description string
+		.WrCB = NULL,						// Callback for write char, set to NULL for read char
+		.SetNotifCB = NULL,					// Callback on set notification
+		.TxCompleteCB = NULL,				// Tx completed callback
+		.pDefValue = NULL,					// pointer to char default values
+		.ValueLen = 0,						// Default value length in bytes
+	},
+	{
+		// Write characteristic
+		.Uuid = BLE_UART_UUID_TX_CHAR,		// char UUID
+		.MaxDataLen = 64,			// char max data length
+		.Property = BLESVC_CHAR_PROP_WRITEWORESP | BLESVC_CHAR_PROP_VARLEN,// char properties define by BLUEIOSVC_CHAR_PROP_...
+		.pDesc = s_TxCharDescString,		// char UTF-8 description string
+		.WrCB = UartTxSrvcCallback,			// Callback for write char, set to NULL for read char
+		.SetNotifCB = NULL,					// Callback on set notification
+		.TxCompleteCB = NULL,				// Tx completed callback
+		.pDefValue = NULL,					// pointer to char default values
+		.ValueLen = 0						// Default value length in bytes
+	},
+};
+
+static const int s_BleUartNbChar = sizeof(g_UartChars) / sizeof(BLESRVC_CHAR);
+
+/// Service definition
+const BleSrvcCfg_t s_UartSrvcCfg = {
+	.SecType = BLESRVC_SECTYPE_NONE,		// Secure or Open service/char
+	.UuidBase = {BLE_UART_UUID_BASE,},		// Base UUID
+	1,
+	.UuidSvc = BLE_UART_UUID_SERVICE,		// Service UUID
+	.NbChar = s_BleUartNbChar,				// Total number of characteristics for the service
+	.pCharArray = g_UartChars,				// Pointer a an array of characteristic
+	.pLongWrBuff = NULL,				// pointer to user long write buffer
+	.LongWrBuffSize = 0,	// long write buffer size
+};
+
+BleSrvc_t g_UartBleSrvc;
+#endif
+
+/// Characteristic definitions
+BleSrvcChar_t g_BluePyroChars[] = {
 	{
 		// Read/write config characteristic
 		.Uuid = BLEPYRO_UUID_CFG_CHAR,
@@ -195,7 +260,7 @@ static const int s_BluePyroNbChar = sizeof(g_BluePyroChars) / sizeof(BLESRVC_CHA
 uint8_t g_LWrBuffer[512];
 
 /// Service definition
-const BLESRVC_CFG s_BluePyroSrvcCfg = {
+const BleSrvcCfg_t s_BluePyroSrvcCfg = {
 	.SecType = BLESRVC_SECTYPE_NONE,		// Secure or Open service/char
 	.UuidBase = {BLUEPYRO_UUID_BASE,},			// Base UUID
 	.NbUuidBase = 4,
@@ -218,7 +283,7 @@ const BLEAPP_DEVDESC s_BluePyroDevDesc = {
 	"0.0",					// Hardware version string
 };
 
-const BLEAPP_CFG s_BleAppCfg = {
+const BleAppCfg_t s_BleAppCfg = {
 	.ClkCfg = { NRF_CLOCK_LF_SRC_XTAL, 0, 0, NRF_CLOCK_LF_ACCURACY_20_PPM},
 	.CentLinkCount = 0, 				// Number of central link
 	.PeriLinkCount = 1, 				// Number of peripheral link
@@ -249,7 +314,7 @@ const BLEAPP_CFG s_BleAppCfg = {
 	.SDEvtHandler = NULL				// RTOS Softdevice handler
 };
 
-static const IOPINCFG s_IOPins[] = {
+static const IOPinCfg_t s_IOPins[] = {
 	{LED1_PORT, LED1_PIN, LED1_PINOP, IOPINDIR_OUTPUT, IOPINRES_NONE, IOPINTYPE_NORMAL},	// LED 1
 	{LED2_B_PORT, LED2_B_PIN, LED2_B_PINOP, IOPINDIR_OUTPUT, IOPINRES_NONE, IOPINTYPE_NORMAL},	// LED 2 Blue
 	{LED2_G_PORT, LED2_G_PIN, LED2_G_PINOP, IOPINDIR_OUTPUT, IOPINRES_NONE, IOPINTYPE_NORMAL},	// LED 2 Green
@@ -270,7 +335,7 @@ static uint8_t s_UartRxFifo[UARTFIFOSIZE];
 static uint8_t s_UartTxFifo[UARTFIFOSIZE];
 
 /// UART pins definitions
-static IOPINCFG s_UartPins[] = {
+static IOPinCfg_t s_UartPins[] = {
 	{UART_RX_PORT, UART_RX_PIN, UART_RX_PINOP, IOPINDIR_INPUT, IOPINRES_NONE, IOPINTYPE_NORMAL},		// RX
 	{UART_TX_PORT, UART_TX_PIN, UART_TX_PINOP, IOPINDIR_OUTPUT, IOPINRES_NONE, IOPINTYPE_NORMAL},		// TX
 	//{UART_CTS_PORT, UART_CTS_PIN, UART_CTS_PINOP, IOPINDIR_INPUT, IOPINRES_NONE, IOPINTYPE_NORMAL},	// CTS
@@ -278,7 +343,7 @@ static IOPINCFG s_UartPins[] = {
 };
 
 /// UART configuration
-static const UARTCFG s_UartCfg = {
+static const UARTCfg_t s_UartCfg = {
 	.DevNo = 0,							// Device number zero based
 	.pIOPinMap = s_UartPins,				// UART assigned pins
 	.NbIOPins = sizeof(s_UartPins) / sizeof(IOPINCFG),	// Total number of UART pins used
@@ -302,7 +367,7 @@ UART g_Uart;
 
 void TimerHandler(TIMER * const pTimer, uint32_t Evt);
 
-const static TIMER_CFG s_TimerCfg = {
+const static TimerCfg_t s_TimerCfg = {
     .DevNo = 2,
 	.ClkSrc = TIMER_CLKSRC_DEFAULT,
 	.Freq = 0,			// 0 => Default highest frequency
@@ -491,6 +556,11 @@ void BleAppAdvTimeoutHandler()
 	}
 }
 
+void UartTxSrvcCallback(BLESRVC *pBlueIOSvc, uint8_t *pData, int Offset, int Len)
+{
+	g_Uart.Tx(pData, Len);
+}
+
 void BlePeriphEvtUserHandler(ble_evt_t * p_ble_evt)
 {
     switch (p_ble_evt->header.evt_id)
@@ -499,12 +569,22 @@ void BlePeriphEvtUserHandler(ble_evt_t * p_ble_evt)
     		//BleAppAdvStart(BLEAPP_ADVMODE_FAST);
     		break;
     }
+
+#ifdef RAW_DATA
+    BleSrvcEvtHandler(&g_UartBleSrvc, p_ble_evt);
+#endif
+
     BleSrvcEvtHandler(&g_BluePyroSrvc, p_ble_evt);
 }
 
 void BleAppInitUserServices()
 {
     uint32_t err_code;
+
+#ifdef RAW_DATA
+    err_code = BleSrvcInit(&g_UartBleSrvc, &s_UartSrvcCfg);
+    APP_ERROR_CHECK(err_code);
+#endif
 
     err_code = BleSrvcInit(&g_BluePyroSrvc, &s_BluePyroSrvcCfg);
     APP_ERROR_CHECK(err_code);
@@ -566,31 +646,45 @@ void BleAppInitUserData()
 void PrintDataChedHandler(void * p_event_data, uint16_t event_size)
 {
 	PYD2592_DATA data;
+	char buff[512];
 
 	uint32_t state = DisableInterrupt();
 	memcpy(&data, (void*)&g_PydData, sizeof(PYD2592_DATA));
 	EnableInterrupt(state);
 
-	g_Uart.printf("%u:%u : Reg:%x, Counts:%d, ", g_PacketCnt, data.Timestamp, data.CfgReg, data.AdcCount);
+	sprintf(buff, "%u:%u : Reg:%x, Counts:%d, ", g_PacketCnt, data.Timestamp, data.CfgReg, data.AdcCount);
+	//g_Uart.printf(buff);
+
 	if (data.OutRange)
 	{
-		g_Uart.printf("Normal\r\n");
+		//g_Uart.printf("Normal\r\n");
+		strcat(buff, "Normal\r\n");
 	}
 	else
 	{
 		if (abs(data.AdcCount) <= 511)
 		{
-			g_Uart.printf("PIR low\r\n");
+//			g_Uart.printf("PIR low\r\n");
+			strcat(buff, "PIR low\r\n");
 		}
 		else if (abs(data.AdcCount) >= ((1<<14) - 511))
 		{
-			g_Uart.printf("PIR sat\r\n");
+			//g_Uart.printf("PIR sat\r\n");
+			strcat(buff, "PIR sat\r\n");
 		}
 		else
 		{
-			g_Uart.printf("Buffer overflow\r\n");
+			//g_Uart.printf("Buffer overflow\r\n");
+			strcat(buff, "Buffer overflow\r\n");
 		}
 	}
+
+	g_Uart.printf(buff);
+
+#ifdef RAW_DATA
+	BleSrvcCharNotify(&g_UartBleSrvc, 0, (uint8_t*)buff, strlen(buff) + 1);
+#endif
+
 	g_PacketCnt++;
 }
 
