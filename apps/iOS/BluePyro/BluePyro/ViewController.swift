@@ -422,12 +422,32 @@ extension ViewController: UIPickerViewDelegate{
         return pickerData[row]
     }
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        mNameEdit.text = pickerData[row]
+        self.mNameEdit.text = pickerData[row]
         self.mBluePyro = DeviceList[row]
         print(self.mBluePyro.identifier.uuidString)
         print("\n")
         
-        mModify = true
-        mUpdateButton.setTitle("UPDATE", for: UIControl.State.normal)
+        self.mModify = true
+        self.mUpdateButton.setTitle("UPDATE", for: UIControl.State.normal)
+       /* DispatchQueue.main.asyncAfter(deadline: .now() + 120, execute: {
+            print("Update timeout")
+            self.bleCentral.cancelPeripheralConnection(self.mBluePyro)
+            self.mModify = false
+            self.mUpdateButton.setTitle("MODIFY", for: UIControl.State.normal)
+           }) */
+        var runCount = 100
+
+        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            print("Timer fired!")
+            runCount -= 1
+            
+            if runCount == 0 {
+                timer.invalidate()
+                print("Update timeout")
+                self.bleCentral.cancelPeripheralConnection(self.mBluePyro)
+                self.mModify = false
+                self.mUpdateButton.setTitle("MODIFY", for: UIControl.State.normal)
+            }
+        }
     }
 }
