@@ -70,35 +70,10 @@
 									<listOptionValue builtIn="false" value="uECC_OPTIMIZATION_LEVEL=3"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.1813923927" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="true" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;../../src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../lib/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/ARM/Nordic/nRF52/nRF52832/lib/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/ARM/Nordic/nRF52/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/ARM/Nordic/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/ARM/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/ARM/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/integration/nrfx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/modules/nrfx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/modules/nrfx/mdk&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/modules/nrfx/hal&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/ble/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/atomic&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/balloc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/fds&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/mutex&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/scheduler&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/experimental_section_vars&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/log&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/log/src&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/memobj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/pwr_mgmt&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/strerror&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/util&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/softdevice/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/softdevice/mbr/headers&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/softdevice/s132/headers&quot;"/>
-									<listOptionValue builtIn="false" value="../../src"/>
-									<listOptionValue builtIn="false" value="../src"/>
 								</option>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.1555757621" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
 							</tool>
@@ -126,6 +101,7 @@
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.nortti.750859565" name="Do not use RTTI (-fno-rtti)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.nortti" useByScannerDiscovery="true" value="true" valueType="boolean"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths.891761202" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths" useByScannerDiscovery="true" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;../../src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/Nordic/nRF52/nRF52832/lib/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/Nordic/nRF52/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/Nordic/include&quot;"/>
@@ -267,33 +243,9 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.676460632" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="true" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;../../src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../lib/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/ARM/Nordic/nRF52/nRF52832/lib/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/ARM/Nordic/nRF52/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/ARM/Nordic/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/ARM/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/ARM/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/integration/nrfx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/modules/nrfx&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/modules/nrfx/mdk&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/modules/nrfx/hal&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/ble/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/atomic&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/balloc&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/fds&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/mutex&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/scheduler&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/experimental_section_vars&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/log&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/log/src&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/memobj&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/pwr_mgmt&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/strerror&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/libraries/util&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/softdevice/common&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/softdevice/mbr/headers&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;../../../../external/nRF5_SDK/components/softdevice/s132/headers&quot;"/>
 								</option>
 								<inputType id="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input.1715558775" superClass="ilg.gnuarmeclipse.managedbuild.cross.tool.c.compiler.input"/>
 							</tool>
@@ -322,6 +274,7 @@
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.nortti.530176171" name="Do not use RTTI (-fno-rtti)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.nortti" useByScannerDiscovery="true" value="true" valueType="boolean"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths.1853188859" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths" useByScannerDiscovery="true" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;../../src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/Nordic/nRF52/nRF52832/lib/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/Nordic/nRF52/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/Nordic/include&quot;"/>
@@ -464,6 +417,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths.2062199798" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.c.compiler.include.paths" useByScannerDiscovery="true" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;../../src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../lib/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../IOsonata/include&quot;"/>
 								</option>
@@ -495,6 +449,7 @@
 								<option id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.nortti.872038539" name="Do not use RTTI (-fno-rtti)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.nortti" useByScannerDiscovery="true" value="true" valueType="boolean"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths.1116054219" name="Include paths (-I)" superClass="ilg.gnuarmeclipse.managedbuild.cross.option.cpp.compiler.include.paths" useByScannerDiscovery="true" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;../../src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/Nordic/nRF52/nRF52832/lib/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/Nordic/nRF52/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/Nordic/include&quot;"/>
