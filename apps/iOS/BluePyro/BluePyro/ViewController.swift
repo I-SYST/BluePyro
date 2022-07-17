@@ -23,7 +23,11 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
     var mName: [UInt8] = [0,0,0,0,0,0,0,0]
     //var mDfuChar: CBCharacteristic
     //var mCfgChar: CBCharacteristic
-   
+    
+    @IBOutlet weak var ExelitasLogo: UIImageView!
+    @IBOutlet weak var ISYSTLogo: UIImageView!
+    @IBOutlet weak var AppNameLabel: UILabel!
+    
     @IBOutlet weak var AdvCountLabel: UILabel!
     @IBOutlet weak var countLabel: UILabel!
     
@@ -40,11 +44,21 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
     @IBOutlet weak var mSwitchPulseMode: UISwitch!
     @IBOutlet weak var mPickerDevice: UIPickerView!
     
+    @IBOutlet weak var SelectDeviceLabel: UILabel!
+    @IBOutlet weak var ThresholdLabel: UILabel!
+    @IBOutlet weak var BlindTimeLabel: UILabel!
+    @IBOutlet weak var PulseCounterLabel: UILabel!
+    @IBOutlet weak var WindowsTimeLabel: UILabel!
+    @IBOutlet weak var HPFLabel: UILabel!
+    @IBOutlet weak var PulseModeLabel: UILabel!
+    
+    
     var pickerData: [String] = [String]()
     var DeviceList: [CBPeripheral] = []
     var bleCentral : CBCentralManager!
     var mBluePyro: CBPeripheral!
-    //@IBOutlet weak var IDLabel: NSTextField!
+    let screenSize: CGRect = UIScreen.main.bounds
+    let ratio = UIScreen.main.scale/UIScreen.main.nativeScale
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,6 +66,57 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
         bleCentral = CBCentralManager(delegate: self, queue: DispatchQueue.main)
         mPickerDevice.dataSource = self
         mPickerDevice.delegate = self
+        
+        ISYSTLogo.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        ISYSTLogo.frame = CGRect(x: 0, y: 40, width: screenSize.width/2-10, height: ISYSTLogo.frame.height)
+        ExelitasLogo.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        ExelitasLogo.frame = CGRect(x: ISYSTLogo.frame.width, y: 40, width: screenSize.width/2, height: ExelitasLogo.frame.height)
+        AdvCountLabel.frame = CGRect(x: screenSize.width/2 + 20, y: screenSize.height-40, width: AdvCountLabel.frame.width, height: AdvCountLabel.frame.height)
+        countLabel.frame = CGRect(x: 10, y: screenSize.height-40, width: countLabel.frame.width, height: countLabel.frame.height)
+        
+        mDFUButton.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        mDFUButton.frame = CGRect(x: 0, y: ISYSTLogo.frame.height + 50, width: screenSize.width/3 - 10, height: mDFUButton.frame.height)
+        AppNameLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        AppNameLabel.frame = CGRect(x: mDFUButton.frame.width + 5, y: ISYSTLogo.frame.height + 50, width: screenSize.width/3 + 10, height: AppNameLabel.frame.height)
+        mUpdateButton.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        mUpdateButton.frame = CGRect(x: mDFUButton.frame.width + AppNameLabel.frame.width, y: ISYSTLogo.frame.height + 50, width: screenSize.width/3 , height: mUpdateButton.frame.height)
+        mNameEdit.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        mNameEdit.frame = CGRect(x: 10, y: ISYSTLogo.frame.height + mDFUButton.frame.height + 60, width: screenSize.width - 20, height: mNameEdit.frame.height)
+        
+        SelectDeviceLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        SelectDeviceLabel.frame = CGRect(x: 10, y: mNameEdit.frame.midY + 50, width: screenSize.width/2, height: SelectDeviceLabel.frame.height)
+        mPickerDevice.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        mPickerDevice.frame = CGRect(x: screenSize.width/2, y: mNameEdit.frame.midY + 25, width: screenSize.width/2 - 10, height: mPickerDevice.frame.height)
+        
+        ThresholdLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        ThresholdLabel.frame = CGRect(x: 10, y: SelectDeviceLabel.frame.midY + 50, width: screenSize.width/2, height: ThresholdLabel.frame.height)
+        mThreshLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        mThreshLabel.frame = CGRect(x: screenSize.width/2, y: SelectDeviceLabel.frame.midY + 50, width: screenSize.width/2 - 10, height: mThreshLabel.frame.height)
+        
+        BlindTimeLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        BlindTimeLabel.frame = CGRect(x: 10, y: ThresholdLabel.frame.midY + 30, width: screenSize.width/2, height: BlindTimeLabel.frame.height)
+        mBTimeLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        mBTimeLabel.frame = CGRect(x: screenSize.width/2, y: ThresholdLabel.frame.midY + 30, width: screenSize.width/2-10, height: mBTimeLabel.frame.height)
+        
+        PulseCounterLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        PulseCounterLabel.frame = CGRect(x: 10, y: BlindTimeLabel.frame.midY + 30, width: screenSize.width/2, height: PulseCounterLabel.frame.height)
+        mPulseCntLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        mPulseCntLabel.frame = CGRect(x: screenSize.width/2, y: BlindTimeLabel.frame.midY + 30, width: screenSize.width/2-10, height: mPulseCntLabel.frame.height)
+        
+        WindowsTimeLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        WindowsTimeLabel.frame = CGRect(x: 10, y: PulseCounterLabel.frame.midY + 30, width: screenSize.width/2, height: WindowsTimeLabel.frame.height)
+        mWinTimeLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        mWinTimeLabel.frame = CGRect(x: screenSize.width/2, y: PulseCounterLabel.frame.midY + 30, width: screenSize.width/2-10, height: mWinTimeLabel.frame.height)
+        
+        HPFLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        HPFLabel.frame = CGRect(x: 10, y: WindowsTimeLabel.frame.midY + 30, width: screenSize.width/2, height: HPFLabel.frame.height)
+        mSwitchHpf.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        mSwitchHpf.frame = CGRect(x: 3*screenSize.width/4 - mSwitchHpf.frame.width/2, y: WindowsTimeLabel.frame.midY + 30, width: screenSize.width/2-10, height: mSwitchHpf.frame.height)
+        
+        PulseModeLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        PulseModeLabel.frame = CGRect(x: 10, y: HPFLabel.frame.midY + 30, width: screenSize.width/2, height: PulseModeLabel.frame.height)
+        mSwitchPulseMode.transform = CGAffineTransform(scaleX: ratio, y: ratio)
+        mSwitchPulseMode.frame = CGRect(x: 3*screenSize.width/4 - mSwitchPulseMode.frame.width/2, y: HPFLabel.frame.midY + 30, width: screenSize.width/2-10, height: mSwitchPulseMode.frame.height)
     }
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
@@ -422,32 +487,12 @@ extension ViewController: UIPickerViewDelegate{
         return pickerData[row]
     }
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        self.mNameEdit.text = pickerData[row]
+        mNameEdit.text = pickerData[row]
         self.mBluePyro = DeviceList[row]
         print(self.mBluePyro.identifier.uuidString)
         print("\n")
         
-        self.mModify = true
-        self.mUpdateButton.setTitle("UPDATE", for: UIControl.State.normal)
-       /* DispatchQueue.main.asyncAfter(deadline: .now() + 120, execute: {
-            print("Update timeout")
-            self.bleCentral.cancelPeripheralConnection(self.mBluePyro)
-            self.mModify = false
-            self.mUpdateButton.setTitle("MODIFY", for: UIControl.State.normal)
-           }) */
-        var runCount = 100
-
-        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            print("Timer fired!")
-            runCount -= 1
-            
-            if runCount == 0 {
-                timer.invalidate()
-                print("Update timeout")
-                self.bleCentral.cancelPeripheralConnection(self.mBluePyro)
-                self.mModify = false
-                self.mUpdateButton.setTitle("MODIFY", for: UIControl.State.normal)
-            }
-        }
+        mModify = true
+        mUpdateButton.setTitle("UPDATE", for: UIControl.State.normal)
     }
 }

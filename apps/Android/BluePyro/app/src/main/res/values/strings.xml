@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BluePyro</string>
+    <string name="hyperlink"><a href="https://www.i-syst.com/general/privacy-policy">Privacy Policy</a></string>
 </resources>

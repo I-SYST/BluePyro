@@ -12,7 +12,7 @@
         android:layout_height="68dp"
         android:layout_margin="10dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
         android:background="#000000"
         app:layout_constraintEnd_toEndOf="parent"
@@ -222,7 +222,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         android:text="Detect Count :"
         android:textAlignment="textEnd"
         app:layout_constraintStart_toStartOf="parent"
@@ -232,7 +232,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         android:text="0"
         android:textAlignment="center"
         app:layout_constraintStart_toEndOf="@+id/textView9"
@@ -242,7 +242,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         android:text="Adv Count :"
         android:textAlignment="textEnd"
         app:layout_constraintStart_toEndOf="@+id/countLabel"
@@ -252,12 +252,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="30dp"
         android:text="0"
         android:textAlignment="center"
         app:layout_constraintStart_toEndOf="@+id/textView10"
         app:layout_constraintTop_toBottomOf="@+id/textView5"  />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/privacy_policy"
+        android:text="@string/hyperlink"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        />
     <EditText
         android:id="@+id/wtimeLabel"
         android:layout_width="0dp"
@@ -282,7 +294,7 @@
         android:layout_marginTop="14dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/i_syst_logo" />
+        app:srcCompat="@drawable/i_syst_logo2" />
 
     <TextView
         android:id="@+id/titleTextView"

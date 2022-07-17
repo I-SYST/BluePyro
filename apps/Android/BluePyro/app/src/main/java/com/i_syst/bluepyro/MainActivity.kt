@@ -32,15 +32,7 @@ import android.bluetooth.BluetoothDevice
 import android.widget.Toast
 
 import android.R.attr.name
-
-
-
-
-
-
-
-
-
+import android.text.method.LinkMovementMethod
 
 
 internal class Device(var deviceName: String, var deviceAddress: String) {
@@ -91,6 +83,7 @@ class MainActivity : AppCompatActivity() {
     private var mDeviceSpiner : Spinner? = null
     private var mDeviceList: MutableList<Device>? = null
     private var dataAdapter: ArrayAdapter<Device>? = null
+    private var mPrivacyPolicyLabel : TextView? = null
     var zeroWeight = 0
     private var mZeroBut : Button? = null
     var mAvrStart : Boolean = false
@@ -166,7 +159,7 @@ class MainActivity : AppCompatActivity() {
                     mDfuChar?.setValue(appData)
                     val res = mBleGatt!!.writeCharacteristic(mDfuChar)
                 }
-                //Log.i(" ssss" , " ddd")
+                Log.i(" ssss" , " ddd")
                 //broadcastUpdate(BLEConstants.ACTION_GATT_SERVICES_DISCOVERED)                       //Go broadcast an intent to say we have discovered services
             } else {                                                                      //Service discovery failed so log a warning
                 //Log.i(TAG, "onServicesDiscovered received: $status")
@@ -331,6 +324,7 @@ class MainActivity : AppCompatActivity() {
         val bluetoothManager =
             getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
 
+
         mUpdateButton = findViewById<View>(R.id.button) as Button
         mUpdateButton?.setOnClickListener {
                 // Code here executes on main thread after user presses button
@@ -396,7 +390,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
+        mPrivacyPolicyLabel = findViewById<View>(R.id.privacy_policy) as TextView
+        mPrivacyPolicyLabel!!.movementMethod = LinkMovementMethod.getInstance()
         mPulseCntLabel = findViewById<View>(R.id.pulsecntLabel) as TextView
         mWinTimeLabel = findViewById<View>(R.id.wtimeLabel) as TextView
         //mHpfLabel = findViewById<View>(R.id.hpfLabel) as TextView
@@ -436,27 +431,26 @@ class MainActivity : AppCompatActivity() {
             callbackType: Int,
             result: ScanResult
         ) {
-            //Log.i("callbackType", callbackType.toString())
-            //Log.i("result", result.toString())
+            Log.i("callbackType", callbackType.toString())
+            Log.i("result", result.toString())
             val device = result.device
             val scanRecord = result.scanRecord
             val scanData = scanRecord!!.bytes
-            val deviceName = scanRecord.deviceName
+            //val name = scanRecord.deviceName
 
             val address = device.address
-            if (deviceName.equals("BluePyro")) {
-                val deviceID: Long = 0
-                val manuf = scanRecord.getManufacturerSpecificData(0x0177)
 
-                if (manuf == null)// || manuf.size < 1)
-                    return
+            val deviceID: Long = 0
+            val manuf = scanRecord.getManufacturerSpecificData(0x0177)
 
-                if (manuf.size < 1)
-                    return
+            if (manuf == null)// || manuf.size < 1)
+                return
 
-                @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
-                when (manuf[0]) {
+            if (manuf.size <1)
+                return
 
+            @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
+            when (manuf[0]) {
 /*                BLEADV_MANDATA_TYPE_TPH -> {
                     val press = ByteBuffer.wrap(
                         manuf,
@@ -491,120 +485,110 @@ class MainActivity : AppCompatActivity() {
                     s = String.format("%d", AirQ)
                     mAirQIdxLabel.setText(s)
                 }*/
-                    BLEADV_MANDATA_TYPE_ADC -> {
-                        val v = ByteBuffer.wrap(
-                            manuf,
-                            5,
-                            4
-                        ).order(ByteOrder.LITTLE_ENDIAN).int
-                        var s = String.format("%x", v)
-                        mRawLabel?.text = s
+                BLEADV_MANDATA_TYPE_ADC -> {
+                    val v = ByteBuffer.wrap(
+                        manuf,
+                        5,
+                        4
+                    ).order(ByteOrder.LITTLE_ENDIAN).int
+                    var s = String.format("%x", v)
+                    mRawLabel?.text = s
 
-                    }
-                    BLEADV_MANDATA_TYPE_APP -> {
-                        val v = String(manuf, 6, manuf.size - 6, Charset.defaultCharset())
-                        val name = v
-                        if (name != null) {
-                            if (mDeviceList!!.isEmpty()) {
-                                mDeviceList!!.add(Device(name, address))
-                            } else {
-                                if (!mDeviceList!!.contains(Device(name, address))) {
-                                    mDeviceList!!.add(Device(name, address))
-
-                                } else {
-                                    mDeviceList!!.removeAt(
-                                        mDeviceList!!.indexOf(
-                                            Device(
-                                                name,
-                                                address
-                                            )
-                                        )
-                                    )
-                                    mDeviceList!!.add(Device(name, address))
-
-                                }
-
-                            }
-                            //mIdLabel?.text = v
-                            dataAdapter!!.notifyDataSetChanged()
-                        }
-                        //val v = ByteBuffer.wrap(
-                        //    manuf,
-                        //    1,
-                        //    8
-                        //).order(ByteOrder.LITTLE_ENDIAN).toString()
-                        //val mdet = ByteBuffer.wrap(
-                        //    manuf,
-                        //    2,
-                        //    8
-                        //).order(ByteOrder.LITTLE_ENDIAN).ByteArray
-                        //mName = manuf.copyOfRange(2, 10)
-
-                        mAdvCnt++
-
-                        if (manuf[1].toInt() == 0) {
-                            mIdLabel?.setBackgroundColor(0xffffffff.toInt())
-
-                        } else {
-                            mDetCnt++
-                            mIdLabel?.setBackgroundColor(0xffff4444.toInt())
-
-                            var s = String.format("%d", mDetCnt)
-                            mRawLabel?.text = s
-                        }
-
-                        if (mModify == false) {
-                            mIdLabel?.text = v
-                            var swpm = findViewById<View>(R.id.switchPulseMode) as Switch
-                            val p = manuf[2].toUInt() and 0x1u
-                            if (p != 0u) {
-                                // Pulse mode
-                                swpm.setChecked(true)
-                            } else {
-                                swpm.setChecked(false)
-                            }
-
-                            var swhpf = findViewById<View>(R.id.switchHpf) as Switch
-                            val hpf = manuf[2].toUInt() and 4u
-                            if (hpf != 0u) {
-                                // HPF Cut off
-                                swhpf.setChecked(true)
-                            } else {
-                                swhpf.setChecked(false)
-                            }
-
-                            var wt = (manuf[3].toInt() shr 1) and 3
-                            val pc = (manuf[3].toInt() shr 3) and 3
-                            val bt =
-                                ((manuf[3].toInt() shr 5) and 0x7) or ((manuf[4].toInt() and 1) shl 3)
-                            val thr =
-                                ((manuf[4].toInt() shr 1) and 0x7f) or ((manuf[5].toInt() and 1) shl 7)
-
-                            mWinTimeLabel?.text = "%d".format(wt)
-                            mPulseCntLabel?.text = String.format("%d", pc)
-                            mBTimeLabel?.text = String.format("%d", bt)
-                            mThreshLabel?.text = String.format("%d", thr)
-
-                            var s = String.format("%d", mAdvCnt)
-                            mAdvCountLabel?.text = s
-                            //s = String.format("%d", mAdvCnt)//(v shr 14) and 0x3fff)
-                        }
-                        //mPirLabel?.text = s
-                        //s = v.toString()
-                        //s = String.format("%d", v and 0x3FFF)
-                        //mTempLabel?.setText(s)
-                        //s = String.format("%d", v and 0x3FFF)
-                        //mTempLabel?.setText(s)
-                    }
                 }
-                //val listView =
-                //    findViewById<View>(R.id.device_listview) as ListView
-                //mAdapter.addItem(device)
-                //mAdapter.notifyDataSetChanged()
-                mBluetoothDevice = device
+                BLEADV_MANDATA_TYPE_APP -> {
+                    val v = String(manuf, 6, manuf.size - 6, Charset.defaultCharset())
+                    val name = v
+                    if (name != null) {
+                        if (mDeviceList!!.isEmpty()) {
+                            mDeviceList!!.add(Device(name,address))
+                        } else {
+                            if (!mDeviceList!!.contains(Device(name, address))) {
+                                mDeviceList!!.add(Device(name,address))
+
+                            }else {
+                                mDeviceList!!.removeAt(mDeviceList!!.indexOf(Device(name, address)))
+                                mDeviceList!!.add(Device(name,address))
+
+                            }
+
+                        }
+                        mIdLabel?.text = v
+                        dataAdapter!!.notifyDataSetChanged()
+                    }
+                    //val v = ByteBuffer.wrap(
+                    //    manuf,
+                    //    1,
+                    //    8
+                    //).order(ByteOrder.LITTLE_ENDIAN).toString()
+                    //val mdet = ByteBuffer.wrap(
+                    //    manuf,
+                    //    2,
+                    //    8
+                    //).order(ByteOrder.LITTLE_ENDIAN).ByteArray
+                    //mName = manuf.copyOfRange(2, 10)
+
+                    mAdvCnt++
+
+                    if (manuf[1].toInt() == 0) {
+                        mIdLabel?.setBackgroundColor(0xffffffff.toInt())
+
+                    } else {
+                        mDetCnt++
+                        mIdLabel?.setBackgroundColor(0xffff4444.toInt())
+
+                        var s = String.format("%d", mDetCnt)
+                        mRawLabel?.text = s
+                    }
+
+                    if (mModify == false) {
+                        mIdLabel?.text = v
+                        var swpm = findViewById<View>(R.id.switchPulseMode) as Switch
+                        val p = manuf[2].toUInt() and 0x1u
+                        if (p != 0u) {
+                            // Pulse mode
+                            swpm.setChecked(true)
+                        } else {
+                            swpm.setChecked(false)
+                        }
+
+                        var swhpf = findViewById<View>(R.id.switchHpf) as Switch
+                        val hpf = manuf[2].toUInt() and 4u
+                        if (hpf != 0u) {
+                            // HPF Cut off
+                            swhpf.setChecked(true)
+                        } else {
+                            swhpf.setChecked(false)
+                        }
+
+                        var wt = (manuf[3].toInt() shr 1) and 3
+                        val pc = (manuf[3].toInt() shr 3) and 3
+                        val bt =
+                            ((manuf[3].toInt() shr 5) and 0x7) or ((manuf[4].toInt() and 1) shl 3)
+                        val thr =
+                            ((manuf[4].toInt() shr 1) and 0x7f) or ((manuf[5].toInt() and 1) shl 7)
+
+                        mWinTimeLabel?.text = "%d".format(wt)
+                        mPulseCntLabel?.text = String.format("%d", pc)
+                        mBTimeLabel?.text = String.format("%d", bt)
+                        mThreshLabel?.text = String.format("%d", thr)
+
+                        var s = String.format("%d", mAdvCnt)
+                        mAdvCountLabel?.text = s
+                        //s = String.format("%d", mAdvCnt)//(v shr 14) and 0x3fff)
+                    }
+                    //mPirLabel?.text = s
+                    //s = v.toString()
+                    //s = String.format("%d", v and 0x3FFF)
+                    //mTempLabel?.setText(s)
+                    //s = String.format("%d", v and 0x3FFF)
+                    //mTempLabel?.setText(s)
+                }
             }
+            //val listView =
+            //    findViewById<View>(R.id.device_listview) as ListView
+            //mAdapter.addItem(device)
+            //mAdapter.notifyDataSetChanged()
+            mBluetoothDevice = device
         }
     }
 }
-
-

@@ -17,6 +17,7 @@
 		33FD290226DD16140022E9C7 /* BluePyroUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD290126DD16140022E9C7 /* BluePyroUITests.swift */; };
 		33FD291026DD1ACB0022E9C7 /* I-SYST_Logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 33FD290F26DD1ACB0022E9C7 /* I-SYST_Logo.png */; };
 		33FD291226DD1AD50022E9C7 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 33FD291126DD1AD50022E9C7 /* logo.png */; };
+		E4524AAF2874828800A777DF /* i-syst-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = E4524AAE2874828700A777DF /* i-syst-logo.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		33FD290326DD16140022E9C7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		33FD290F26DD1ACB0022E9C7 /* I-SYST_Logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "I-SYST_Logo.png"; sourceTree = "<group>"; };
 		33FD291126DD1AD50022E9C7 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		E4524AAE2874828700A777DF /* i-syst-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "i-syst-logo.png"; path = "../../../../../../Documents/i-syst-logo.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 		33FD28DE26DD16130022E9C7 /* BluePyro */ = {
 			isa = PBXGroup;
 			children = (
+				E4524AAE2874828700A777DF /* i-syst-logo.png */,
 				33FD291126DD1AD50022E9C7 /* logo.png */,
 				33FD290F26DD1ACB0022E9C7 /* I-SYST_Logo.png */,
 				33FD28DF26DD16130022E9C7 /* AppDelegate.swift */,
@@ -238,6 +241,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				33FD28EC26DD16140022E9C7 /* LaunchScreen.storyboard in Resources */,
+				E4524AAF2874828800A777DF /* i-syst-logo.png in Resources */,
 				33FD291226DD1AD50022E9C7 /* logo.png in Resources */,
 				33FD28E926DD16140022E9C7 /* Assets.xcassets in Resources */,
 				33FD28E726DD16130022E9C7 /* Main.storyboard in Resources */,
@@ -374,7 +378,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -429,7 +433,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -444,16 +448,19 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 75P57S8LPC;
 				INFOPLIST_FILE = BluePyro/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.i-syst.BluePyro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -464,16 +471,19 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 75P57S8LPC;
 				INFOPLIST_FILE = BluePyro/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.i-syst.BluePyro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -485,7 +495,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2DRDT73N7F;
+				DEVELOPMENT_TEAM = 75P57S8LPC;
 				INFOPLIST_FILE = BluePyroTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -528,7 +538,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2DRDT73N7F;
+				DEVELOPMENT_TEAM = 75P57S8LPC;
 				INFOPLIST_FILE = BluePyroUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
