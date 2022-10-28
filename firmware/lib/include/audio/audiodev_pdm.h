@@ -49,14 +49,17 @@ SOFTWARE.
 #define PDM_MAX_NB_IOPIN		2
 
 typedef enum __PDM_OpMode {
-	PDM_OPMODE_MONO,
+	PDM_OPMODE_MONO_LEFT,
+	PDM_OPMODE_MONO_RIGHT,
 	PDM_OPMODE_STEREO
 } PDM_OPMODE;
 
 typedef enum __PDM_SamplMode {
-	PDM_SMPLMODE_FALING,
-	PDM_SMPLMODE_RISING
+	PDM_SMPLMODE_FALING,	// Left
+	PDM_SMPLMODE_RISING		// Right
 } PDM_SMPLMODE;
+
+#define PDM_IOPIN_MAXCNT		2
 
 /// PDM pins map index
 #define PDM_CLK_IOPIN_IDX		0	//!< Clock
@@ -66,31 +69,33 @@ typedef enum __PDM_SamplMode {
 
 /// Configuration data used to initialize device
 typedef struct __PDM_Config {
-	int DevNo;			//!< Device physical instance number
-	IOPinCfg_t * const pIOPinMap;	//!< Define I/O pins used by PDM (standard pins : CLK, DATA)
-	PDM_OPMODE OpMode;	//!< Mono/Stereo mode
-	PDM_SMPLMODE SmplMode;	//!< Sample mode
-	uint32_t Freq;		//! sampling frequency in Hz
+	int DevNo;					//!< Device physical instance number
+	IOPinCfg_t * const pIOPinMap;//!< Define I/O pins used by PDM (standard pins : CLK, DATA)
+	PDM_OPMODE OpMode;			//!< Mono/Stereo mode
+	PDM_SMPLMODE SmplMode;		//!< Sample mode
+	uint32_t Freq;				//! sampling frequency in Hz
 	int32_t GainLeft;
 	int32_t GainRight;
-	bool bIntEn;		//!< true - Interrupt enable
-	int IntPrio;		//!< Interrupt priority
-	DevIntrfEvtHandler_t EvtCB;	//!< Interrupt based event callback function pointer. Must be set to NULL if not used
+	int RxBlkSize;				//!< Fifo block size, must be multiple of samples
 	int RxMemSize;				//!< Memory size in bytes for Rx CFIFO
 	uint8_t *pRxMem;			//!< Pointer to memory allocated for RX CFIFO
+	bool bIntEn;				//!< true - Interrupt enable
+	int IntPrio;				//!< Interrupt priority
+	DevIntrfEvtHandler_t EvtCB;	//!< Interrupt based event callback function pointer. Must be set to NULL if not used
 } PdmCfg_t;
 
 /// Device driver data require by low level functions
 typedef struct __PDM_Device {
-	PDM_OPMODE OpMode;	//!< Mono/Stereo mode
-	PDM_SMPLMODE SmplMode;	//!< Sample mode
-	uint32_t Freq;		//! sampling frequency in mHz
-	uint32_t MClkFreq;	//!< Master clock frequency in Hz
-	DevIntrf_t DevIntrf;	//!< Device interface instance
-	IOPinCfg_t *pIOPinMap;	//!< Define I/O pins used by PDM (standard pins : CLK, DATA)
+	PDM_OPMODE OpMode;			//!< Mono/Stereo mode
+	PDM_SMPLMODE SmplMode;		//!< Sample mode
+	uint32_t Freq;				//! sampling frequency in mHz
+	uint32_t MClkFreq;			//!< Master clock frequency in Hz
+	DevIntrf_t DevIntrf;		//!< Device interface instance
+	IOPinCfg_t *pIOPinMap;		//!< Define I/O pins used by PDM (standard pins : CLK, DATA)
 	int32_t GainLeft;
 	int32_t GainRight;
 	HCFIFO hRxFifo;				//!< Rx FIFO handle
+	int NbSamples;
 } PdmDev_t;
 
 #pragma pack(pop)

@@ -44,6 +44,10 @@ SOFTWARE.
 #define DISKIO_CACHE_SECT_MAX	    1       //!< Max number of cache sector
 #define DISKIO_CACHE_DIRTY_BIT      (1<<31) //!< This bit is set in the UseCnt if there was
                                             //!< write to the cache
+typedef enum __DiskIOType {
+	DISKIO_TYPE_STANDARD,	//!< Standard direct R/W
+	DISKIO_TYPE_ERASEWR,	//!< Requires erase before write such as NOR Flash
+} DISKIO_TYPE;
 
 #pragma pack(push, 1)
 typedef struct __DiskPartition {
@@ -53,13 +57,17 @@ typedef struct __DiskPartition {
 	uint8_t CHSEnd[3];		//!< CHS End partition
 	uint32_t LBAStart;		//!< LBA Start partition
 	uint32_t LBASize;		//!< Number of sectors in partition
-} DISKPART;
+} DiskPart_t;
+
+typedef DiskPart_t	DISKPART;
 
 typedef struct __MasterBootRecord {
 	uint8_t Boostrap[446];	// All zeroes
-	DISKPART Part[4];
+	DiskPart_t Part[4];
 	uint16_t Sig;
-} MBR;
+} Mbr_t;
+
+typedef Mbr_t	MBR;
 
 #pragma pack(pop)
 
@@ -71,7 +79,9 @@ typedef struct __DiskIO_Cache_Desc {
 	volatile int UseCnt;	//!< semaphore
 	uint32_t    SectNo;		//!< sector number of this cache
 	uint8_t		*pSectData;	//!< Pointer to sector cache memory. Must be at least 1 sector size
-} DISKIO_CACHE_DESC;
+} DiskIOCache_t;
+
+typedef DiskIOCache_t	DISKIO_CACHE_DESC;
 
 #pragma pack(pop)
 
@@ -97,11 +107,19 @@ public:
 	virtual uint32_t GetNbSect(void) { return ((uint64_t)GetSize() * 1024ULL) / GetSectSize(); }
 
 	/**
-	 * @brief	Get to=tal disk size in bytes.
+	 * @brief	Get total disk size in KBytes.
 	 *
 	 * @return	Total disk size in KBytes.
 	 */
 	virtual uint32_t GetSize(void) = 0;
+
+	/**
+	 * @brief	Get minimum erase size in bytes
+	 *
+	 * @return	Minimum erase size in bytes.
+	 * 			0 for direct R/W device
+	 */
+	virtual uint32_t GetMinEraseSize(void) { return 0; }
 
 	/**
 	 * @brief	Read one sector from physical device.
@@ -151,15 +169,16 @@ public:
 	virtual void Erase() {}
 
 	int	GetCacheSect(uint32_t SectNo, bool bLock = false);
-	void SetCache(DISKIO_CACHE_DESC * const pCacheBlk, int NbCacheBlk);
+	void SetCache(DiskIOCache_t * const pCacheBlk, int NbCacheBlk);
 	void Flush();
 
 protected:
+	DISKIO_TYPE vType;
 
 private:
 	int vLastIdx;	    //!< Last cache sector accessed
 	int vNbCache;       //!< Number of cache sector
-	DISKIO_CACHE_DESC *vpCacheSect;	//!< pointer to static disk cache
+	DiskIOCache_t *vpCacheSect;	//!< pointer to static disk cache
 };
 
 extern "C" {

@@ -12,27 +12,27 @@ Current implementation
 
 @license
 
-Copyright (c) 2011, I-SYST inc., all rights reserved
+MIT License
 
-Permission to use, copy, modify, and distribute this software for any purpose
-with or without fee is hereby granted, provided that the above copyright
-notice and this permission notice appear in all copies, and none of the
-names : I-SYST or its contributors may be used to endorse or
-promote products derived from this software without specific prior written
-permission.
+Copyright (c) 2011-2021 I-SYST inc. All rights reserved.
 
-For info or contributing contact : hnhoan at i-syst dot com
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND ANY
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ----------------------------------------------------------------------------*/
 #ifndef __SPI_H__
@@ -61,7 +61,8 @@ typedef enum __SPI_Status {
 
 typedef enum __SPI_Mode {
 	SPIMODE_MASTER,				//!< SPI master
-	SPIMODE_SLAVE				//!< SPI slave
+	SPIMODE_SLAVE,				//!< SPI slave
+	SPIMODE_MMASTER				//!< SPI Multi-master, not all MCU supports this mode
 } SPIMODE;
 
 typedef enum __SPI_Clk_Polarity {
@@ -91,29 +92,58 @@ typedef enum __SPI_Phy {
 	SPIPHY_4WIRE = SPIPHY_NORMAL,
 	SPIPHY_3WIRE,				//!< 3 wires MISO/MOSI mux
 	SPIPHY_DUAL,				//!< Dual SPI D0, D1 or used
-	SPIPHY_QUAD_SDR,			//!< QSPI, single data rate
-	SPIPHY_QUAD_DDR,			//!< QSPI, dual data rate
+	SPIPHY_QUAD_SDR,			//!< QuadSPI, single data rate
+	SPIPHY_QUAD_DDR,			//!< QuadSPI, dual data rate, data transfer on both edges of the clk
+	SPIPHY_OCTO_SDR,			//!< OctoSPI, single data rate
+	SPIPHY_OCTO_DDR,			//!< OctoSPI, dual data rate, data transfer on both edges of the clk
+	SPIPHY_OCTO_HYPER,			//!< OctoSPI, HyperBus
 } SPIPHY;
+
+/// Quad/Octo SPI phase
+typedef enum __QOSPI_Phase {
+	QOSPI_PHASE_IDLE,			//!< Quad/Octo SPI idle phase
+	QOSPI_PHASE_INST,			//!< Quad/Octo SPI instruction phase
+	QOSPI_PHASE_DATA			//!< Quad/Octo SPI data phase
+} QOSPI_PHASE;
+
+typedef enum __QOSPI_Mode {
+	QOSPI_MODE_NORMAL,
+	QOSPI_MODE_INDIRECT,
+	QOSPI_MODE_MEMMAP			//!< memory mapped
+} QOSPI_MODE;
 
 #define SPI_MAX_RETRY			5
 
 #define SPI_SLAVEMODE_MAX_DEV	4	//!< Max number of device (CS) supported in slave mode
  	 	 	 	 	 	 	 	 	//!< the real implementation may support less depending on hardware
 
-/// SPI pins indexes
+/// SPI pin indexes
 #define SPI_SCK_IOPIN_IDX		0
 #define SPI_MISO_IOPIN_IDX		1
 #define SPI_MOSI_IOPIN_IDX		2
 #define SPI_CS_IOPIN_IDX		3	//!< Starting index for SPI chip select. This can
 									//!< grow to allows multiple devices on same SPI.
 
-/// Quad SPI pins indexes
+/// Quad SPI pin indexes
 #define QSPI_SCK_IOPIN_IDX		0
 #define QSPI_D0_IOPIN_IDX		1
 #define QSPI_D1_IOPIN_IDX		2
 #define QSPI_D2_IOPIN_IDX		3
 #define QSPI_D3_IOPIN_IDX		4
 #define QSPI_CS_IOPIN_IDX		5	//!< Starting index for SPI chip select. This can
+									//!< grow to allows multiple devices on same SPI.
+
+/// Octo SPI pin indexes
+#define OSPI_SCK_IOPIN_IDX		0
+#define OSPI_D0_IOPIN_IDX		1
+#define OSPI_D1_IOPIN_IDX		2
+#define OSPI_D2_IOPIN_IDX		3
+#define OSPI_D3_IOPIN_IDX		4
+#define OSPI_D4_IOPIN_IDX		5
+#define OSPI_D5_IOPIN_IDX		6
+#define OSPI_D6_IOPIN_IDX		7
+#define OSPI_D7_IOPIN_IDX		8
+#define OSPI_CS_IOPIN_IDX		9	//!< Starting index for SPI chip select. This can
 									//!< grow to allows multiple devices on same SPI.
 
 #pragma pack(push, 4)
@@ -125,7 +155,7 @@ typedef struct __SPI_Config {
 	SPIMODE Mode;			//!< Master/Slave mode
 	const IOPinCfg_t *pIOPinMap;	//!< Define I/O pins used by SPI (including CS array)
 	int NbIOPins;			//!< Total number of I/O pins
-	int Rate;				//!< Speed in Hz
+	uint32_t Rate;			//!< Speed in Hz
 	uint32_t DataSize; 		//!< Data Size 4-16 bits
 	int MaxRetry;			//!< Max number of retry
 	SPIDATABIT BitOrder;	//!< Data bit ordering
@@ -154,8 +184,8 @@ typedef QSPICmdSetup_t	QSPI_CMD_SETUP;
 
 /// Device driver data require by low level functions
 typedef struct __SPI_Device {
-	SPICfg_t Cfg;			//!< Config data
-	DevIntrf_t DevIntrf;	//!< device interface implementation
+	SPICfg_t Cfg;				//!< Config data
+	DevIntrf_t DevIntrf;		//!< device interface implementation
 	int	FirstRdData;		//!< This is to keep the first dummy read data of SPI
 							//!< there are devices that may return a status code through this
 	int	CurDevCs;			//!< Current active device CS
@@ -182,6 +212,7 @@ static inline int SPISetRate(SPIDev_t * const pDev, int Rate) {
 }
 static inline void SPIEnable(SPIDev_t * const pDev) { DeviceIntrfEnable(&pDev->DevIntrf); }
 static inline void SPIDisable(SPIDev_t * const pDev) { DeviceIntrfDisable(&pDev->DevIntrf); }
+static inline void SPIPowerOff(SPIDev_t * const pDev) { DeviceIntrfPowerOff(&pDev->DevIntrf); }
 static inline int SPIRx(SPIDev_t * const pDev, int DevCs, uint8_t *pBuff, int Bufflen) {
 	return DeviceIntrfRx(&pDev->DevIntrf, DevCs, pBuff, Bufflen);
 }

@@ -31,6 +31,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>src/uECC.c</name>
+			<type>1</type>
+			<locationURI>PARENT-5-PROJECT_LOC/external/micro-ecc/uECC.c</locationURI>
+		</link>
+		<link>
 			<name>src/nRF5_SDK/libraries</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>

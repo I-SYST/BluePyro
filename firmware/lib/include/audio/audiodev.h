@@ -52,15 +52,14 @@ typedef enum __Audio_Sample_Width {
 	AUDIO_SWIDTH_32BITS = 32,
 } AUDIO_SWIDTH;
 
-typedef enum __Audio_Mode {
-	AUDIO_MODE_STEREO,	//!< Both channel
-	AUDIO_MODE_LEFT,	//!< Left channel only
-	AUDIO_MODE_RIGHT,	//!< Right channel only
-} AUDIO_MODE;
-
 typedef enum __Audio_Chan {
+	AUDIO_CHAN_STEREO,	//!< Left & right channels
 	AUDIO_CHAN_LEFT,	//!< Left channel
 	AUDIO_CHAN_RIGHT,	//!< Right channel
+	AUDIO_CHAN_CENTER,
+	AUDIO_CHAN_REAR_LEFT,
+	AUDIO_CHAN_REAR_RIGHT,
+	AUDIO_CHAN_ALL
 } AUDIO_CHAN;
 
 #pragma pack(push, 4)
@@ -72,14 +71,14 @@ typedef struct __Audio_Data {
 
 /// Configuration data used to initialize device
 typedef struct __Audio_Device_Config {
-	AUDIO_MODE Chan;			//! Channel stereo/left/right
+	AUDIO_CHAN Chan;			//! Channel stereo/left/right
 	AUDIO_SWIDTH SampleWidth;	//!< Sample width 8/16/24/32 bits
 	uint32_t Freq;				//! Sampling frequency in Hz
 } AudioDevCfg_t;
 
 /// Device driver data require by low level functions
 typedef struct __Audio_Device {
-	AUDIO_MODE Chan;			//! Channel stereo/left/right
+	AUDIO_CHAN Chan;			//! Channel stereo/left/right
 	AUDIO_SWIDTH SampleWidth;	//!<
 	uint32_t Freq;				//! sampling frequency in mHz
 	DEVINTRF DevIntrf;			//!< Device interface instance
@@ -154,7 +153,7 @@ public:
 protected:
 	uint32_t vSampFreq;			//!< Sampling frequency in Hz
 	uint8_t vSampWidth;			//!< Sampling width int bits
-	AUDIO_MODE vAudioMode;
+	AUDIO_CHAN vAudioMode;
 	AUDIO_SWIDTH vSWidth;		//!< Sample width in bits
 
 private:

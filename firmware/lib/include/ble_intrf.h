@@ -37,7 +37,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BLE_INTRF_H__
 #define __BLE_INTRF_H__
 
-#include "ble_service.h"
+#include "bluetooth/ble_srvc.h"
 #include "device_intrf.h"
 #include "cfifo.h"
 
@@ -45,7 +45,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   * @{
   */
 
-#define BLEINTRF_TRANSBUFF_MAXLEN       509
+#define BLEINTRF_TRANSBUFF_MAXLEN       512
 
 /**
  * This structure define the CFIFO data packet
@@ -74,14 +74,15 @@ typedef BleIntrfPkt_t	BLEINTRF_PKT;
 
 typedef struct __BleDeviceInterfConfig {
 	BleSrvc_t *pBleSrv;		//!< BLE Service
-    int		RxCharIdx;		//!< Write characteristic index (From BLE)
-    int		TxCharIdx;		//!< Read characteristic index (to BLE)
-    int		PacketSize;		//!< BLE packet size
-	int		RxFifoMemSize;	//!< Total memory size for CFIFO
-	uint8_t	*pRxFifoMem;	//!< Pointer to memory to be used by CFIFO
-	int		TxFifoMemSize;	//!< Total memory size for CFIFO
-	uint8_t	*pTxFifoMem;	//!< Pointer to memory to be used by CFIFO
-	DevIntrfEvtHandler_t EvtCB;	//!< Event callback
+    int RxCharIdx;			//!< Write characteristic index (From BLE)
+    int TxCharIdx;			//!< Read characteristic index (to BLE)
+    int PacketSize;			//!< BLE packet size
+    bool bBlocking;			//!< true - Blocking Fifo, false - Non blocking
+	int RxFifoMemSize;		//!< Total memory size for CFIFO
+	uint8_t *pRxFifoMem;	//!< Pointer to memory to be used by CFIFO
+	int TxFifoMemSize;		//!< Total memory size for CFIFO
+	uint8_t *pTxFifoMem;	//!< Pointer to memory to be used by CFIFO
+	DevIntrfEvtHandler_t EvtCB;//!< Event callback
 } BleIntrfCfg_t;
 
 typedef BleIntrfCfg_t	BLEINTRF_CFG;

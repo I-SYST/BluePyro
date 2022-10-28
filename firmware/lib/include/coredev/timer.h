@@ -52,6 +52,9 @@ SOFTWARE.
 
 #include <stdint.h>
 #include <string.h>
+#ifndef __cplusplus
+#include <stdbool.h>
+#endif
 
 /// Clock source used for the timer
 typedef enum __Timer_Clock_Src {
@@ -59,7 +62,8 @@ typedef enum __Timer_Clock_Src {
 	TIMER_CLKSRC_LFRC,		//!< Low frequency internal RC oscillator
     TIMER_CLKSRC_HFRC,		//!< High frequency internal RC oscillator
     TIMER_CLKSRC_LFXTAL,	//!< Low frequency crystal
-    TIMER_CLKSRC_HFXTAL		//!< High frequency crystal
+    TIMER_CLKSRC_HFXTAL,	//!< High frequency crystal
+	TIMER_CLKSRC_EXT		//!< External clock signal
 } TIMER_CLKSRC;
 
 /// Timer interrupt enable type
@@ -135,6 +139,7 @@ typedef struct __Timer_Config {
     int             IntPrio;    //!< Interrupt priority. recommended to use highest
     							//!< priority if precision timing is required
     TimerEvtHandler_t EvtHandler; //!< Interrupt handler
+    bool			bTickInt;	//!< Enable tick interrupt. Use with caution, could cause crashes due to excessive interrupts
 } TimerCfg_t;
 
 typedef TimerCfg_t	TIMER_CFG;
@@ -403,7 +408,7 @@ public:
 
 	Timer() { vTimer.pObj = this; }
 
-	virtual operator TimerDev_t * const () { return &vTimer; }
+	virtual operator TimerDev_t const * () { return &vTimer; }
 
     /**
      * @brief   Timer initialization.

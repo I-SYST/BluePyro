@@ -186,6 +186,7 @@ SOFTWARE.
 #define FLASH_CMD_RDCR              0x15    //!< Read configuration register
 #define FLASH_CMD_WRSR              0x01    //!< Write Register (Status 1, Configuration 1)
 #define FLASH_CMD_WRITE             0x2
+#define FLASH_CMD_DWRITE            0xA2
 #define FLASH_CMD_4WRITE            0x38
 #define FLASH_CMD_QWRITE			0x32
 #define FLASH_CMD_E4WRITE			0x12
@@ -199,14 +200,19 @@ SOFTWARE.
 #define FLASH_CMD_READSTATUS        0x5
 #define FLASH_CMD_WRENABLE          0x6
 #define FLASH_CMD_EN4B              0xB7    //!< Enable 4 bytes address
-#define FLASH_CMD_EX4B              0xE9    //!< Disable 4 bytes address
+#define FLASH_CMD_DIS4B             0xE9    //!< Disable 4 bytes address
 #define FLASH_CMD_SECTOR_ERASE		0x20	//!< Sector erase
 #define FLASH_CMD_BLOCK_ERASE_32    0x52	//!< 32KB Block erase
 #define FLASH_CMD_BLOCK_ERASE       0xD8	//!< Block erase
 #define FLASH_CMD_BULK_ERASE        0xC7	//!< Chip erase
 #define FLASH_CMD_BULK_ERASE_ALT	0x60	//!< Alternate chip erase command
 
+#define FLASH_CMD_RESET_ENABLE		0x66	//!< Enable reset
+#define FLASH_CMD_RESET_DEVICE		0x99	//!< Reset
+
 #define FLASH_STATUS_WIP            (1<<0)  // Write In Progress
+#define FLASH_STATUS_WEL			(1<<1)	// Write enable
+#define FLASH_STATUS_QE				(1<<6)	// Quad enable
 
 #pragma pack(push, 1)
 /// Quad SPI flash can have different command code and dummy cycle.
@@ -215,7 +221,10 @@ SOFTWARE.
 typedef struct __Quad_Flash_Cmd {
 	uint8_t Cmd;				//!< Command code
 	uint8_t DummyCycle;			//!< Dummy cycle
-} CMDCYCLE;
+} CmdCycle_t;
+
+typedef CmdCycle_t	CMDCYCLE;
+#ifdef __cplusplus
 
 /**
  * @brief FlashDiskIO callback function.
@@ -228,7 +237,8 @@ typedef struct __Quad_Flash_Cmd {
  * @return  true - Success\n
  *          false - Failed.
  */
-typedef bool (*FLASHDISKIOCB)(int DevNo, DeviceIntrf * const pInterf);
+typedef bool (*FlaskDiskIOCb_t)(int DevNo, DeviceIntrf * const pInterf);
+typedef FlaskDiskIOCb_t	FLASHDISKIOCB;
 
 typedef struct {
     int         DevNo;          //!< Device number or address for interface use
@@ -239,13 +249,15 @@ typedef struct {
     int         AddrSize;       //!< Address size in bytes
     uint32_t	DevId;			//!< Device ID, read using FLASH_CMD_READID
     int			DevIdSize;		//!< Length of device id in bytes to read (max 4 bytes)
-    FLASHDISKIOCB pInitCB; 		//!< For custom initialization. Set to NULL if not used
-    FLASHDISKIOCB pWaitCB;		//!< If provided, this is called when there are
+    FlaskDiskIOCb_t pInitCB; 	//!< For custom initialization. Set to NULL if not used
+    FlaskDiskIOCb_t pWaitCB;	//!< If provided, this is called when there are
     							//!< long delays, such as mass erase, to allow application
     							//!< to perform other tasks while waiting
-    CMDCYCLE	RdCmd;			//!< QSPI read cmd and dummy cycle
-    CMDCYCLE	WrCmd;			//!< QSPI write cmd and dummy cycle
-} FLASHDISKIO_CFG;
+    CmdCycle_t	RdCmd;			//!< QSPI read cmd and dummy cycle
+    CmdCycle_t	WrCmd;			//!< QSPI write cmd and dummy cycle
+} FlashDiskIOCfg_t;
+
+typedef FlashDiskIOCfg_t	FLASHDISKIO_CFG;
 
 #pragma pack(pop)
 
@@ -271,22 +283,22 @@ public:
 	 * 			- true 	: Success
 	 * 			- false	: Failed
 	 */
-	bool Init(const FLASHDISKIO_CFG &Cfg, DeviceIntrf * const pInterf,
-	          DISKIO_CACHE_DESC * const pCacheBlk = NULL, int NbCacheBlk = 0);
+	bool Init(const FlashDiskIOCfg_t &Cfg, DeviceIntrf * const pInterf,
+			  DiskIOCache_t * const pCacheBlk = NULL, int NbCacheBlk = 0);
 
-    /**
-     * @brief	Get total disk size in bytes.
-     *
-     * @return	Total size in KBytes
-     */
-    virtual uint32_t GetSize(void) { return vTotalSize; }
+	/**
+	 * @brief	Get total disk size in bytes.
+	 *
+	 * @return	Total size in KBytes
+	 */
+	virtual uint32_t GetSize(void) { return vTotalSize; }
 
     /**
 	 * @brief	Device specific minimum erasable block size in bytes.
 	 *
 	 * @return	Block size in bytes
 	 */
-	virtual uint32_t GetMinEraseSize() { return vSectSize; }
+	virtual uint32_t GetMinEraseSize(void) { return vSectSize; }
 
 	/**
 	 * @brief	Device specific minimum write size in bytes
@@ -320,111 +332,114 @@ public:
 	virtual void EraseSector(uint32_t SectNo, int NbSect);
 
 	/**
-     * @brief	Read one sector from physical device.
-     *
-     * @param	SectNo	: Sector number to read
-     * @param	pBuff	: Pointer to buffer to receive sector data. Must be at least
-     * 					  1 sector size
-     *
-     * @return
-     * 			- true	: Success
-     * 			- false	: Failed
-     */
-    virtual bool SectRead(uint32_t SectNo, uint8_t *pBuff);
+	 * @brief	Read one sector from physical device.
+	 *
+	 * @param	SectNo	: Sector number to read
+	 * @param	pBuff	: Pointer to buffer to receive sector data. Must be at least
+	 * 					  1 sector size
+	 *
+	 * @return
+	 * 			- true	: Success
+	 * 			- false	: Failed
+	 */
+	virtual bool SectRead(uint32_t SectNo, uint8_t *pBuff);
 
-    /**
-     * @brief	Write one sector to physical device
-     *
-     * @param	SectNo	: Sector number to read
-     * @param	pData	: Pointer to sector data to write. Must be at least
-     * 					  1 sector size
-     *
-     * @return
-     * 			- true	: Success
-     * 			- false	: Failed
-     */
-    virtual bool SectWrite(uint32_t SectNo, uint8_t *pData);
+	/**
+	 * @brief	Write one sector to physical device
+	 *
+	 * @param	SectNo	: Sector number to read
+	 * @param	pData	: Pointer to sector data to write. Must be at least
+	 * 					  1 sector size
+	 *
+	 * @return
+	 * 			- true	: Success
+	 * 			- false	: Failed
+	 */
+	virtual bool SectWrite(uint32_t SectNo, uint8_t *pData);
 
-    /**
-     * @brief	Read Flash ID
-     *
-     * @param	Len : Length of id to read in bytes
-     *
-     * @return	Flash ID
-     */
-    uint32_t ReadId(int Len);
+	/**
+	 * @brief	Read Flash ID
+	 *
+	 * @param	Len : Length of id to read in bytes
+	 *
+	 * @return	Flash ID
+	 */
+	uint32_t ReadId(int Len);
 
-    /**
-     * @brief	Read Flash status.
-     *
-     * @return	Flash status
-     */
-    uint8_t ReadStatus();
+	/**
+	 * @brief	Read Flash status.
+	 *
+	 * @return	Flash status
+	 */
+	uint8_t ReadStatus();
 
-    /**
-     * @brief	Get the sector erase size
-     *
-     * The return value is normally set via configuration structure at init
-     *
-     * @return	Size in KBytes
-     */
-    uint16_t SectEraseSize() { return vSectSize; }
+	/**
+	 * @brief	Get the sector erase size
+	 *
+	 * The return value is normally set via configuration structure at init
+	 *
+	 * @return	Size in KBytes
+	 */
+	uint16_t SectEraseSize() { return vSectSize; }
 
-    /**
-     * @brief	Get the block erase size
-     *
-     * The return value is normally set via configuration structure at init
-     *
-     * @return	Size in KBytes
-     */
-    uint16_t BlockEraseSize() { return vBlkSize; }
+	/**
+	 * @brief	Get the block erase size
+	 *
+	 * The return value is normally set via configuration structure at init
+	 *
+	 * @return	Size in KBytes
+	 */
+	uint16_t BlockEraseSize() { return vBlkSize; }
 
+	/**
+	 * @brief	Reset DiskIO to its default state
+	 */
+	virtual void Reset();
 
 protected:
 
-    /**
-     * @brief	Disable Flash write
-     */
-    void WriteDisable();
+	/**
+	 * @brief	Disable Flash write
+	 */
+	void WriteDisable();
 
-    /**
-     * @brief	Enable Flash write
-     *
-     * @param	Timeout : Timeout counter
-     *
-     * @return
-     * 			- true	: Success
-     * 			- false	: Failed
-     */
-    bool WriteEnable(uint32_t Timeout = 100000);
+	/**
+	 * @brief	Enable Flash write
+	 *
+	 * @param	Timeout : Timeout counter
+	 *
+	 * @return
+	 * 			- true	: Success
+	 * 			- false	: Failed
+	 */
+	bool WriteEnable(uint32_t Timeout = 100000);
 
-    /**
-     * @brief	Wait for Flash ready flag
-     *
-     * @param	Timeout : Timeout counter
-     * @param	usRtyDelay	: Timeout in us before retry (optional)
-     *
-     * @return
-     * 			- true	: Success
-     * 			- false	: Failed
-     */
-    bool WaitReady(uint32_t Timeout = 100000, uint32_t usRtyDelay = 0);
+	/**
+	 * @brief	Wait for Flash ready flag
+	 *
+	 * @param	Timeout : Timeout counter
+	 * @param	usRtyDelay	: Timeout in us before retry (optional)
+	 *
+	 * @return
+	 * 			- true	: Success
+	 * 			- false	: Failed
+	 */
+	bool WaitReady(uint32_t Timeout = 100000, uint32_t usRtyDelay = 0);
 
 private:
-    uint16_t    vSectSize;		//!< Erasable sector size in KBytes
-    uint16_t    vBlkSize;		//!< Erasable block size in KBytes
-    uint32_t    vWriteSize;		//!< Min writable size in bytes
-    uint32_t    vTotalSize;		//!< Total Flash size in KBytes
-    int         vAddrSize;		//!< Address size in bytes
-    int         vDevNo;			//!< Device No
-    DeviceIntrf *vpInterf;		//!< Device interface to access Flash
-    FLASHDISKIOCB vpWaitCB;		//!< User wait callback when long wait time is required. This is to allows
-    							//!< user application to perform task switch or other thing while waiting.
-    CMDCYCLE	vRdCmd;			//!< QSPI read/write and dummy cycle
-    CMDCYCLE	vWrCmd;			//!< QSPI read/write and dummy cycle
+	uint16_t    vSectSize;		//!< Erasable sector size in KBytes
+	uint16_t    vBlkSize;		//!< Erasable block size in KBytes
+	uint32_t    vWriteSize;		//!< Min writable size in bytes
+	uint32_t    vTotalSize;		//!< Total Flash size in KBytes
+	int         vAddrSize;		//!< Address size in bytes
+	int         vDevNo;			//!< Device No
+	DeviceIntrf *vpInterf;		//!< Device interface to access Flash
+	FlaskDiskIOCb_t vpWaitCB;	//!< User wait callback when long wait time is required. This is to allows
+								//!< user application to perform task switch or other thing while waiting.
+	CmdCycle_t	vRdCmd;			//!< QSPI read/write and dummy cycle
+	CmdCycle_t	vWrCmd;			//!< QSPI read/write and dummy cycle
 };
 
-#ifdef __cplusplus
 extern "C" {
 #endif
 

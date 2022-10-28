@@ -45,8 +45,9 @@ SOFTWARE.
 
 #include "istddef.h"
 #include "idelay.h"
-#include "ble_app.h"
-#include "ble_service.h"
+#include "bluetooth/ble_app.h"
+#include "ble_app_nrf5.h"
+#include "bluetooth/ble_srvc.h"
 #include "bluetooth/blueio_blesrvc.h"
 #include "blueio_board.h"
 #include "coredev/uart.h"
@@ -81,16 +82,16 @@ void PydIntHandler(int IntNo, void *pCtx);
 #define MANUFACTURER_ID                 ISYST_BLUETOOTH_ID                  /**< Manufacturer ID, part of System ID. Will be passed to Device Information Service. */
 #define ORG_UNIQUE_ID                   ISYST_BLUETOOTH_ID                  /**< Organizational Unique ID, part of System ID. Will be passed to Device Information Service. */
 
-#define APP_ADV_INTERVAL                MSEC_TO_UNITS(40, UNIT_0_625_MS)	/**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
+#define APP_ADV_INTERVAL                40//MSEC_TO_UNITS(40, UNIT_0_625_MS)	/**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 
 #ifdef RAW_DATA
 #define APP_ADV_TIMEOUT					0	// Never timeout
 #else
-#define APP_ADV_TIMEOUT					MSEC_TO_UNITS(2500, UNIT_10_MS)		/**< The advertising timeout (in units of 10ms seconds). */
+#define APP_ADV_TIMEOUT					2500//MSEC_TO_UNITS(2500, UNIT_10_MS)		/**< The advertising timeout (in units of 10ms seconds). */
 #endif
 
-#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(8, UNIT_1_25_MS)     /**< Minimum acceptable connection interval (20 ms), Connection interval uses 1.25 ms units. */
-#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(40, UNIT_1_25_MS)     /**< Maximum acceptable connection interval (75 ms), Connection interval uses 1.25 ms units. */
+#define MIN_CONN_INTERVAL               8//MSEC_TO_UNITS(8, UNIT_1_25_MS)     /**< Minimum acceptable connection interval (20 ms), Connection interval uses 1.25 ms units. */
+#define MAX_CONN_INTERVAL               40//MSEC_TO_UNITS(40, UNIT_1_25_MS)     /**< Maximum acceptable connection interval (75 ms), Connection interval uses 1.25 ms units. */
 
 #define BLE_UART_UUID_BASE			BLUEIO_UUID_BASE
 
@@ -107,11 +108,11 @@ typedef struct {
 
 #pragma pack(pop)
 
-void BluePyroCfgWrSrvcCallback(BLESRVC *pBlueIOSvc, uint8_t *pData, int Offset, int Len);
-void BluePyroDfuWrSrvcCallback(BLESRVC *pBlueIOSvc, uint8_t *pData, int Offset, int Len);
+void BluePyroCfgWrSrvcCallback(BleSrvc_t *pBlueIOSvc, uint8_t *pData, int Offset, int Len);
+void BluePyroDfuWrSrvcCallback(BleSrvc_t *pBlueIOSvc, uint8_t *pData, int Offset, int Len);
 
 __attribute__ ((section(".Version"), used))
-const APP_INFO g_AppInfo = {
+const AppInfo_t g_AppInfo = {
 	DEVICE_NAME, {BLUEPYRO_VERS, 0, BUILDN},
 	{'I', '-', 'S', 'Y', 'S', 'T', '-', 'B', 'L', 'U', 'E', 'P', 'Y', 'R', 'O',  25},
 };
@@ -233,7 +234,7 @@ BleSrvcChar_t g_BluePyroChars[] = {
 		// Read/write config characteristic
 		.Uuid = BLEPYRO_UUID_CFG_CHAR,
 		.MaxDataLen = 20,
-		.Property = BLESVC_CHAR_PROP_WRITE | BLESVC_CHAR_PROP_READ | BLESVC_CHAR_PROP_VARLEN,
+		.Property = BLESRVC_CHAR_PROP_WRITE | BLESRVC_CHAR_PROP_READ | BLESRVC_CHAR_PROP_VARLEN,
 		.pDesc = s_CfgCharDescString,		// char UTF-8 description string
 		.WrCB = BluePyroCfgWrSrvcCallback,
 		.SetNotifCB = NULL,					// Callback on set notification
@@ -245,7 +246,7 @@ BleSrvcChar_t g_BluePyroChars[] = {
 		// Read/write config characteristic
 		.Uuid = BLEPYRO_UUID_DFU_CHAR,
 		.MaxDataLen = 4,
-		.Property = BLESVC_CHAR_PROP_WRITE | BLESVC_CHAR_PROP_VARLEN,
+		.Property = BLESRVC_CHAR_PROP_WRITE | BLESRVC_CHAR_PROP_VARLEN,
 		.pDesc = s_DfuCharDescString,		// char UTF-8 description string
 		.WrCB = BluePyroDfuWrSrvcCallback,
 		.SetNotifCB = NULL,					// Callback on set notification
@@ -255,15 +256,16 @@ BleSrvcChar_t g_BluePyroChars[] = {
 	},
 };
 
-static const int s_BluePyroNbChar = sizeof(g_BluePyroChars) / sizeof(BLESRVC_CHAR);
+static const int s_BluePyroNbChar = sizeof(g_BluePyroChars) / sizeof(BleSrvcChar_t);
 
 uint8_t g_LWrBuffer[512];
 
 /// Service definition
 const BleSrvcCfg_t s_BluePyroSrvcCfg = {
 	.SecType = BLESRVC_SECTYPE_NONE,		// Secure or Open service/char
-	.UuidBase = {BLUEPYRO_UUID_BASE,},			// Base UUID
-	.NbUuidBase = 4,
+	.bCustom = true,
+	.UuidBase = BLUEPYRO_UUID_BASE,			// Base UUID
+	//.NbUuidBase = 4,
 	.UuidSvc = BLEPYRO_UUID_SERVICE,		// Service UUID
 	.NbChar = s_BluePyroNbChar,				// Total number of characteristics for the service
 	.pCharArray = g_BluePyroChars,			// Pointer a an array of characteristic
@@ -271,11 +273,11 @@ const BleSrvcCfg_t s_BluePyroSrvcCfg = {
 	.LongWrBuffSize = 0,					// long write buffer size
 };
 
-BLESRVC g_BluePyroSrvc;
+BleSrvc_t g_BluePyroSrvc;
 
 static char s_FirmVers[16] = "00.00.200101";
 
-const BLEAPP_DEVDESC s_BluePyroDevDesc = {
+const BleAppDevInfo_t s_BluePyroDevDesc = {
 	MODEL_NAME,       		// Model name
 	MANUFACTURER_NAME,		// Manufacturer name
 	"123",					// Serial number string
@@ -284,15 +286,16 @@ const BLEAPP_DEVDESC s_BluePyroDevDesc = {
 };
 
 const BleAppCfg_t s_BleAppCfg = {
-	.ClkCfg = { NRF_CLOCK_LF_SRC_XTAL, 0, 0, NRF_CLOCK_LF_ACCURACY_20_PPM},
+	.Role = BLEAPP_ROLE_PERIPHERAL,
+	//.ClkCfg = { NRF_CLOCK_LF_SRC_XTAL, 0, 0, NRF_CLOCK_LF_ACCURACY_20_PPM},
 	.CentLinkCount = 0, 				// Number of central link
 	.PeriLinkCount = 1, 				// Number of peripheral link
-	.AppMode = BLEAPP_MODE_APPSCHED,	// Use scheduler
+	//.AppMode = BLEAPP_MODE_APPSCHED,	// Use scheduler
 	.pDevName = DEVICE_NAME,			// Device name
 	.VendorID = ISYST_BLUETOOTH_ID,		// PnP Bluetooth/USB vendor id
 	.ProductId = 1,						// PnP Product ID
 	.ProductVer = 0,					// Pnp prod version
-	.bEnDevInfoService = true,			// Enable device information service (DIS)
+	//.bEnDevInfoService = true,			// Enable device information service (DIS)
 	.pDevDesc = &s_BluePyroDevDesc,
 	.pAdvManData = (uint8_t*)&g_AdvData,			// Manufacture specific data to advertise
 	.AdvManDataLen = sizeof(BLUEPYRO_ADVDATA),	// Length of manufacture specific data
@@ -300,8 +303,8 @@ const BleAppCfg_t s_BleAppCfg = {
 	.SrManDataLen = 0,
 	.SecType = BLEAPP_SECTYPE_NONE,//BLEAPP_SECTYPE_STATICKEY_MITM,//BLEAPP_SECTYPE_NONE,    // Secure connection type
 	.SecExchg = BLEAPP_SECEXCHG_NONE,	// Security key exchange
-	.pAdvUuids = NULL,      			// Service uuids to advertise
-	.NbAdvUuid = 0, 					// Total number of uuids
+	.pAdvUuid = NULL,      			// Service uuids to advertise
+	//.NbAdvUuid = 0, 					// Total number of uuids
 	.AdvInterval = APP_ADV_INTERVAL,	// Advertising interval in msec
 	.AdvTimeout = APP_ADV_TIMEOUT,		// Advertising timeout in sec
 	.AdvSlowInterval = 0,				// Slow advertising interval, if > 0, fallback to
@@ -494,7 +497,7 @@ void PyroCfgUpdateSched(void * p_event_data, uint16_t event_size)
 	g_AdvData.PyroCfg = g_AppData.PyroCfg;
 }
 
-void BluePyroCfgWrSrvcCallback(BLESRVC *pBlueIOSvc, uint8_t *pData, int Offset, int Len)
+void BluePyroCfgWrSrvcCallback(BleSrvc_t *pBlueIOSvc, uint8_t *pData, int Offset, int Len)
 {
 	int len = min((size_t)Len, sizeof(APP_DATA));
 
@@ -514,7 +517,7 @@ void BluePyroCfgWrSrvcCallback(BLESRVC *pBlueIOSvc, uint8_t *pData, int Offset, 
 	}
 }
 
-void BluePyroDfuWrSrvcCallback(BLESRVC *pBlueIOSvc, uint8_t *pData, int Offset, int Len)
+void BluePyroDfuWrSrvcCallback(BleSrvc_t *pBlueIOSvc, uint8_t *pData, int Offset, int Len)
 {
 	if (*pData == 0xFF)
 	{
@@ -529,7 +532,7 @@ void AdvChedHandler(void * p_event_data, uint16_t event_size)
 		if (BleAppAdvManDataSet((uint8_t*)&g_AdvData, sizeof(g_AdvData), NULL, 0) == false)
 		{
 			g_bAdv = true;
-			BleAppAdvStart(BLEAPP_ADVMODE_FAST);
+			BleAppAdvStart();//BLEAPP_ADVMODE_FAST);
 		}
 	}
 }
@@ -556,7 +559,7 @@ void BleAppAdvTimeoutHandler()
 	}
 }
 
-void UartTxSrvcCallback(BLESRVC *pBlueIOSvc, uint8_t *pData, int Offset, int Len)
+void UartTxSrvcCallback(BleSrvc_t *pBlueIOSvc, uint8_t *pData, int Offset, int Len)
 {
 	g_Uart.Tx(pData, Len);
 }
@@ -574,7 +577,7 @@ void BlePeriphEvtUserHandler(ble_evt_t * p_ble_evt)
     BleSrvcEvtHandler(&g_UartBleSrvc, p_ble_evt);
 #endif
 
-    BleSrvcEvtHandler(&g_BluePyroSrvc, p_ble_evt);
+    BleSrvcEvtHandler(&g_BluePyroSrvc, (uint32_t)p_ble_evt);
 }
 
 void BleAppInitUserServices()
@@ -794,7 +797,7 @@ void UartRxChedHandler(void * p_event_data, uint16_t event_size)
 			//if (g_bAdvertising == false)
 			{
 				g_bAdvertising = true;
-				BleAppAdvStart(BLEAPP_ADVMODE_FAST);
+				BleAppAdvStart();//BLEAPP_ADVMODE_FAST);
 			}
 			break;
 	}
@@ -903,7 +906,7 @@ int main()
 {
 	HardwareInit();
 
-    BleAppInit((const BLEAPP_CFG *)&s_BleAppCfg, true);
+    BleAppInit((const BleAppCfg_t *)&s_BleAppCfg);//, true);
 
 	BleAppRun();
 
