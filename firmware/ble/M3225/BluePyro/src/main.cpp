@@ -228,6 +228,9 @@ const BleSrvcCfg_t s_UartSrvcCfg = {
 BleSrvc_t g_UartBleSrvc;
 #endif
 
+static uint8_t s_BluePyroCharCfgMem[20];
+static uint8_t s_BluePyroCharDfuMem[4];
+
 /// Characteristic definitions
 BleSrvcChar_t g_BluePyroChars[] = {
 	{
@@ -239,8 +242,9 @@ BleSrvcChar_t g_BluePyroChars[] = {
 		.WrCB = BluePyroCfgWrSrvcCallback,
 		.SetNotifCB = NULL,					// Callback on set notification
 		.TxCompleteCB = NULL,				// Tx completed callback
-		.pDefValue = NULL,					// pointer to char default values
+		//.pDefValue = NULL,					// pointer to char default values
 		.ValueLen = 0,						// Default value length in bytes
+		.CharVal = {20, 0, s_BluePyroCharCfgMem, 0},
 	},
 	{
 		// Read/write config characteristic
@@ -251,8 +255,9 @@ BleSrvcChar_t g_BluePyroChars[] = {
 		.WrCB = BluePyroDfuWrSrvcCallback,
 		.SetNotifCB = NULL,					// Callback on set notification
 		.TxCompleteCB = NULL,				// Tx completed callback
-		.pDefValue = NULL,					// pointer to char default values
+//		.pDefValue = NULL,					// pointer to char default values
 		.ValueLen = 0,						// Default value length in bytes
+		.CharVal = {20, 0, s_BluePyroCharDfuMem, 0},
 	},
 };
 
@@ -266,7 +271,7 @@ const BleSrvcCfg_t s_BluePyroSrvcCfg = {
 	.bCustom = true,
 	.UuidBase = BLUEPYRO_UUID_BASE,			// Base UUID
 	//.NbUuidBase = 4,
-	.UuidSvc = BLEPYRO_UUID_SERVICE,		// Service UUID
+	.UuidSrvc = BLEPYRO_UUID_SERVICE,		// Service UUID
 	.NbChar = s_BluePyroNbChar,				// Total number of characteristics for the service
 	.pCharArray = g_BluePyroChars,			// Pointer a an array of characteristic
 	.pLongWrBuff = NULL,					// pointer to user long write buffer

@@ -1,9 +1,8 @@
-/*--------------------------------------------------------------------------
-File   : iatomic.h
+/**-------------------------------------------------------------------------
+@file	iatomic.h
 
-Author : Hoang Nguyen Hoan          Sep. 12, 1996
+@brief	Atomic operations.
 
-Desc   : Atomic operations.
          Because of it's platform dependent nature, this file requires conditional
          compilation for each platform port.
 
@@ -12,7 +11,12 @@ Desc   : Atomic operations.
             __TCS__           - Trimedia
             __ADSPBLACKFIN__  - ADSP Blackfin
 
-Copyright (c) 1996-2008, I-SYST, all rights reserved
+@author	Hoang Nguyen Hoan
+@date	Sep. 12, 1996
+
+@license
+
+Copyright (c) 1996-2020, I-SYST, all rights reserved
 
 Permission to use, copy, modify, and distribute this software for any purpose
 with or without fee is hereby granted, provided that the above copyright
@@ -34,14 +38,23 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-----------------------------------------------------------------------------
-Modified by         Date           	Description
-Hoan				17 nov. 2014	Adapt to GNU GCC
 ----------------------------------------------------------------------------*/
 #ifndef __ATOMIC_H__
 #define __ATOMIC_H__
 
+#ifdef __cplusplus
+#include <atomic>
+#elif !defined(WIN32)
+#include <stdatomic.h>
+#endif
+
 #include <signal.h>
+
+#ifdef __signal_h
+// Seeger studio bypass standard signal definitions
+// so we need to make the definition here
+typedef int	sig_atomic_t;		/* Atomic entity type (ANSI) */
+#endif
 
 #if defined(_WIN32) || defined(WIN32)
 //
@@ -49,14 +62,6 @@ Hoan				17 nov. 2014	Adapt to GNU GCC
 //
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#include <inttypes.h>
-#ifndef __cplusplus
-#include <stdbool.h>
-#endif
-
-typedef sig_atomic_t		atomic_int;
-typedef uint32_t			atomic_uint_fast32_t;
-typedef bool				atomic_flag;
 
 #elif defined(__TCS__)
 //
@@ -84,7 +89,10 @@ typedef bool				atomic_flag;
 #endif
 #endif
 
+#ifndef __unix__
 #include "cmsis_gcc.h"
+#endif
+
 #endif
 
 #else
@@ -202,14 +210,6 @@ static inline void AtomicAssign(sig_atomic_t *pVar, sig_atomic_t NewVal) {
    __atomic_store_n (pVar, NewVal, __ATOMIC_SEQ_CST);
 #endif
 }
-
-#if defined(_WIN32) || defined(WIN32)
-static inline void atomic_store(atomic_int* pVar, sig_atomic_t NewVal) {
-	InterlockedExchange(pVar, NewVal);
-}
-
-#endif
-
 #endif // __TSOK__
 
 /**
@@ -258,11 +258,6 @@ static inline bool AtomicTestAndSet(void *pVar) {
    return __atomic_test_and_set(pVar, __ATOMIC_SEQ_CST);
 #endif
 }
-
-#define atomic_flag_test_and_set	AtomicTestAndSet
-static inline void atomic_flag_clear(atomic_flag *pVar) {
-	InterlockedExchange((LONG*)pVar, (LONG)0);
-}
 #endif // __TSOK__
 
 /**
@@ -279,7 +274,7 @@ sig_atomic_t AtomicExchange(sig_atomic_t *pVar, sig_atomic_t NewVal);
 static inline void AtomicClear(void *pVar) {
 
 #if defined(_WIN32) || defined(WIN32)
-	InterlockedExchange((LONG*)pVar, (LONG)0);
+
 #elif defined(__TCS__)
 
 #elif defined(__GNUC__)
@@ -289,6 +284,7 @@ static inline void AtomicClear(void *pVar) {
 #endif // __TSOK__
 
 #if defined(_WIN32) || defined(WIN32)
+#elif defined(__unix__)
 #else
 static inline uint32_t EnterCriticalSection(void) {
 #ifdef __arm__
@@ -307,7 +303,8 @@ static inline void ExitCriticalSection(uint32_t State) {
 }
 #endif
 
-#ifdef __arm__
+#ifdef __unix__
+#elif defined(__arm__)
 static inline uint32_t DisableInterrupt() {
 	uint32_t __primmask = __get_PRIMASK();
 	__disable_irq();
