@@ -45,14 +45,14 @@ SOFTWARE.
 
 #include "istddef.h"
 #include "idelay.h"
-#include "bluetooth/ble_app.h"
-#include "ble_app_nrf5.h"
-#include "bluetooth/ble_srvc.h"
+#include "bluetooth/bt_app.h"
+//#include "ble_app_nrf5.h"
+#include "bluetooth/bt_gatt.h"
 #include "bluetooth/blueio_blesrvc.h"
-#include "blueio_board.h"
+//#include "blueio_board.h"
 #include "coredev/uart.h"
-#include "custom_board.h"
-#include "coredev/iopincfg.h"
+//#include "custom_board.h"
+//#include "coredev/iopincfg.h"
 #include "iopinctrl.h"
 #include "excelitas_serlink.h"
 #include "interrupt.h"
@@ -103,13 +103,13 @@ void PydIntHandler(int IntNo, void *pCtx);
 
 typedef struct {
 	uint8_t Name[BLUEPYRO_ADV_NAME_MAXLEN];
-	PyroCfg_reg_t PyroCfg;
+	PyroCfgReg_t PyroCfg;
 } APP_DATA;
 
 #pragma pack(pop)
 
-void BluePyroCfgWrSrvcCallback(BleSrvc_t *pBlueIOSvc, uint8_t *pData, int Offset, int Len);
-void BluePyroDfuWrSrvcCallback(BleSrvc_t *pBlueIOSvc, uint8_t *pData, int Offset, int Len);
+void BluePyroCfgWrSrvcCallback(BtGattChar_t *pChar, uint8_t *pData, int Offset, int Len);
+void BluePyroDfuWrSrvcCallback(BtGattChar_t *pChar, uint8_t *pData, int Offset, int Len);
 
 __attribute__ ((section(".Version"), used))
 const AppInfo_t g_AppInfo = {
@@ -117,7 +117,7 @@ const AppInfo_t g_AppInfo = {
 	{'I', '-', 'S', 'Y', 'S', 'T', '-', 'B', 'L', 'U', 'E', 'P', 'Y', 'R', 'O',  25},
 };
 
-BLUEPYRO_ADVDATA g_AdvData = {
+BluePyroAdvData_t g_AdvData = {
 	BLEADV_MANDATA_TYPE_APP,
 	0,
 	{ 0 },
@@ -125,9 +125,17 @@ BLUEPYRO_ADVDATA g_AdvData = {
 
 bool g_bAdvertising = false;
 
-static const ble_uuid_t  s_AdvUuids[] = {
-	{BLEPYRO_UUID_SERVICE, BLE_UUID_TYPE_VENDOR_BEGIN}
+//static const ble_uuid_t  s_AdvUuids[] = {
+//	{BLEPYRO_UUID_SERVICE, BLE_UUID_TYPE_VENDOR_BEGIN}
+//};
+
+static const BtUuidArr_t s_AdvUuid = {
+	.BaseIdx = 1,
+	.Type = BT_UUID_TYPE_16,
+	.Count = 1,
+	.Uuid16 = {BLEPYRO_UUID_SERVICE,}
 };
+
 
 static const char s_CfgCharDescString[] = {
 	"BluePyro Config characteristic",
@@ -157,7 +165,7 @@ alignas(4) APP_DATA g_AppData = {
 	}}
 };
 
-volatile PYD2592_DATA g_PydData;
+volatile Pyd2592Data_t g_PydData;
 
 alignas(4) static fds_record_t const g_AppDataRecord =
 {
@@ -232,42 +240,40 @@ static uint8_t s_BluePyroCharCfgMem[20];
 static uint8_t s_BluePyroCharDfuMem[4];
 
 /// Characteristic definitions
-BleSrvcChar_t g_BluePyroChars[] = {
+BtGattChar_t g_BluePyroChars[] = {
 	{
 		// Read/write config characteristic
 		.Uuid = BLEPYRO_UUID_CFG_CHAR,
 		.MaxDataLen = 20,
-		.Property = BLESRVC_CHAR_PROP_WRITE | BLESRVC_CHAR_PROP_READ | BLESRVC_CHAR_PROP_VARLEN,
+		.Property = BT_GATT_CHAR_PROP_WRITE | BT_GATT_CHAR_PROP_READ | BT_GATT_CHAR_PROP_VALEN,
 		.pDesc = s_CfgCharDescString,		// char UTF-8 description string
 		.WrCB = BluePyroCfgWrSrvcCallback,
 		.SetNotifCB = NULL,					// Callback on set notification
 		.TxCompleteCB = NULL,				// Tx completed callback
-		//.pDefValue = NULL,					// pointer to char default values
+		.pValue = s_BluePyroCharCfgMem,
 		.ValueLen = 0,						// Default value length in bytes
-		.CharVal = {20, 0, s_BluePyroCharCfgMem, 0},
 	},
 	{
 		// Read/write config characteristic
 		.Uuid = BLEPYRO_UUID_DFU_CHAR,
 		.MaxDataLen = 4,
-		.Property = BLESRVC_CHAR_PROP_WRITE | BLESRVC_CHAR_PROP_VARLEN,
+		.Property = BT_GATT_CHAR_PROP_WRITE | BT_GATT_CHAR_PROP_VALEN,
 		.pDesc = s_DfuCharDescString,		// char UTF-8 description string
 		.WrCB = BluePyroDfuWrSrvcCallback,
 		.SetNotifCB = NULL,					// Callback on set notification
 		.TxCompleteCB = NULL,				// Tx completed callback
-//		.pDefValue = NULL,					// pointer to char default values
+		.pValue = s_BluePyroCharDfuMem,
 		.ValueLen = 0,						// Default value length in bytes
-		.CharVal = {20, 0, s_BluePyroCharDfuMem, 0},
 	},
 };
 
-static const int s_BluePyroNbChar = sizeof(g_BluePyroChars) / sizeof(BleSrvcChar_t);
+static const int s_BluePyroNbChar = sizeof(g_BluePyroChars) / sizeof(BtGattChar_t);
 
 uint8_t g_LWrBuffer[512];
 
 /// Service definition
-const BleSrvcCfg_t s_BluePyroSrvcCfg = {
-	.SecType = BLESRVC_SECTYPE_NONE,		// Secure or Open service/char
+const BtGattSrvcCfg_t s_BluePyroSrvcCfg = {
+	.SecType = BTDEV_SECTYPE_NONE,		// Secure or Open service/char
 	.bCustom = true,
 	.UuidBase = BLUEPYRO_UUID_BASE,			// Base UUID
 	//.NbUuidBase = 4,
@@ -278,11 +284,11 @@ const BleSrvcCfg_t s_BluePyroSrvcCfg = {
 	.LongWrBuffSize = 0,					// long write buffer size
 };
 
-BleSrvc_t g_BluePyroSrvc;
+BtGattSrvc_t g_BluePyroSrvc;
 
 static char s_FirmVers[16] = "00.00.200101";
 
-const BleAppDevInfo_t s_BluePyroDevDesc = {
+const BtDevInfo_t s_BluePyroDevDesc = {
 	MODEL_NAME,       		// Model name
 	MANUFACTURER_NAME,		// Manufacturer name
 	"123",					// Serial number string
@@ -290,24 +296,24 @@ const BleAppDevInfo_t s_BluePyroDevDesc = {
 	"0.0",					// Hardware version string
 };
 
-const BleAppCfg_t s_BleAppCfg = {
-	.Role = BLEAPP_ROLE_PERIPHERAL,
+const BtDevCfg_t s_BleAppCfg = {
+	.Role = BTDEV_ROLE_PERIPHERAL,
 	//.ClkCfg = { NRF_CLOCK_LF_SRC_XTAL, 0, 0, NRF_CLOCK_LF_ACCURACY_20_PPM},
 	.CentLinkCount = 0, 				// Number of central link
 	.PeriLinkCount = 1, 				// Number of peripheral link
 	//.AppMode = BLEAPP_MODE_APPSCHED,	// Use scheduler
 	.pDevName = DEVICE_NAME,			// Device name
-	.VendorID = ISYST_BLUETOOTH_ID,		// PnP Bluetooth/USB vendor id
+	.VendorId = ISYST_BLUETOOTH_ID,		// PnP Bluetooth/USB vendor id
 	.ProductId = 1,						// PnP Product ID
 	.ProductVer = 0,					// Pnp prod version
 	//.bEnDevInfoService = true,			// Enable device information service (DIS)
-	.pDevDesc = &s_BluePyroDevDesc,
+	.pDevInfo = &s_BluePyroDevDesc,
 	.pAdvManData = (uint8_t*)&g_AdvData,			// Manufacture specific data to advertise
-	.AdvManDataLen = sizeof(BLUEPYRO_ADVDATA),	// Length of manufacture specific data
+	.AdvManDataLen = sizeof(BluePyroAdvData_t),	// Length of manufacture specific data
 	.pSrManData = NULL,
 	.SrManDataLen = 0,
-	.SecType = BLEAPP_SECTYPE_NONE,//BLEAPP_SECTYPE_STATICKEY_MITM,//BLEAPP_SECTYPE_NONE,    // Secure connection type
-	.SecExchg = BLEAPP_SECEXCHG_NONE,	// Security key exchange
+	.SecType = BTDEV_SECTYPE_NONE,//BLEAPP_SECTYPE_STATICKEY_MITM,//BLEAPP_SECTYPE_NONE,    // Secure connection type
+	.SecExchg = BTDEV_SECEXCHG_NONE,	// Security key exchange
 	.pAdvUuid = NULL,      			// Service uuids to advertise
 	//.NbAdvUuid = 0, 					// Total number of uuids
 	.AdvInterval = APP_ADV_INTERVAL,	// Advertising interval in msec
@@ -502,7 +508,7 @@ void PyroCfgUpdateSched(void * p_event_data, uint16_t event_size)
 	g_AdvData.PyroCfg = g_AppData.PyroCfg;
 }
 
-void BluePyroCfgWrSrvcCallback(BleSrvc_t *pBlueIOSvc, uint8_t *pData, int Offset, int Len)
+void BluePyroCfgWrSrvcCallback(BtGattChar_t *pChar, uint8_t *pData, int Offset, int Len)
 {
 	int len = min((size_t)Len, sizeof(APP_DATA));
 
@@ -522,11 +528,11 @@ void BluePyroCfgWrSrvcCallback(BleSrvc_t *pBlueIOSvc, uint8_t *pData, int Offset
 	}
 }
 
-void BluePyroDfuWrSrvcCallback(BleSrvc_t *pBlueIOSvc, uint8_t *pData, int Offset, int Len)
+void BluePyroDfuWrSrvcCallback(BtGattChar_t *pChar, uint8_t *pData, int Offset, int Len)
 {
 	if (*pData == 0xFF)
 	{
-		BleAppEnterDfu();
+		BtAppEnterDfu();
 	}
 }
 
@@ -534,15 +540,15 @@ void AdvChedHandler(void * p_event_data, uint16_t event_size)
 {
 	if (isConnected() == false)
 	{
-		if (BleAppAdvManDataSet((uint8_t*)&g_AdvData, sizeof(g_AdvData), NULL, 0) == false)
+		if (BtDevAdvManDataSet((uint8_t*)&g_AdvData, sizeof(g_AdvData), NULL, 0) == false)
 		{
 			g_bAdv = true;
-			BleAppAdvStart();//BLEAPP_ADVMODE_FAST);
+			BtDevAdvStart();//BLEAPP_ADVMODE_FAST);
 		}
 	}
 }
 
-void BleAppAdvTimeoutHandler()
+void BtAppAdvTimeoutHandler()
 {
 	g_AdvData.MotionDet--;
 
@@ -564,28 +570,21 @@ void BleAppAdvTimeoutHandler()
 	}
 }
 
-void UartTxSrvcCallback(BleSrvc_t *pBlueIOSvc, uint8_t *pData, int Offset, int Len)
+void UartTxSrvcCallback(BtGattChar_t *pChar, uint8_t *pData, int Offset, int Len)
 {
 	g_Uart.Tx(pData, Len);
 }
 
-void BlePeriphEvtUserHandler(ble_evt_t * p_ble_evt)
+void BtAppPeriphEvtUserHandler(uint32_t p_ble_evt, void *pCtx)
 {
-    switch (p_ble_evt->header.evt_id)
-    {
-    	case BLE_GAP_EVT_DISCONNECTED:
-    		//BleAppAdvStart(BLEAPP_ADVMODE_FAST);
-    		break;
-    }
-
 #ifdef RAW_DATA
     BleSrvcEvtHandler(&g_UartBleSrvc, p_ble_evt);
 #endif
 
-    BleSrvcEvtHandler(&g_BluePyroSrvc, (uint32_t)p_ble_evt);
+    BtGattEvtHandler(&g_BluePyroSrvc, (uint32_t)p_ble_evt);
 }
 
-void BleAppInitUserServices()
+void BtDevInitCustomServices()
 {
     uint32_t err_code;
 
@@ -594,13 +593,13 @@ void BleAppInitUserServices()
     APP_ERROR_CHECK(err_code);
 #endif
 
-    err_code = BleSrvcInit(&g_BluePyroSrvc, &s_BluePyroSrvcCfg);
+    err_code = BtGattSrvcAdd(&g_BluePyroSrvc, &s_BluePyroSrvcCfg);
     APP_ERROR_CHECK(err_code);
 
-    BleSrvcCharSetValue(&g_BluePyroSrvc, 0, (uint8_t*)&g_AppData, sizeof(APP_DATA));
+    BtGattCharSetValue(&g_BluePyroSrvc.pCharArray[0], (uint8_t*)&g_AppData, sizeof(APP_DATA));
 }
 
-void BleAppInitUserData()
+void BtDevInitCustomData()
 {
     /* Register first to receive an event when initialization is complete. */
     (void) fds_register(fds_evt_handler);
@@ -653,11 +652,11 @@ void BleAppInitUserData()
 
 void PrintDataChedHandler(void * p_event_data, uint16_t event_size)
 {
-	PYD2592_DATA data;
+	Pyd2592Data_t data;
 	char buff[512];
 
 	uint32_t state = DisableInterrupt();
-	memcpy(&data, (void*)&g_PydData, sizeof(PYD2592_DATA));
+	memcpy(&data, (void*)&g_PydData, sizeof(Pyd2592Data_t));
 	EnableInterrupt(state);
 
 	sprintf(buff, "%u:%u : Reg:%x, Counts:%d, ", g_PacketCnt, data.Timestamp, data.CfgReg, data.AdcCount);
@@ -802,7 +801,7 @@ void UartRxChedHandler(void * p_event_data, uint16_t event_size)
 			//if (g_bAdvertising == false)
 			{
 				g_bAdvertising = true;
-				BleAppAdvStart();//BLEAPP_ADVMODE_FAST);
+				BtDevAdvStart();//BLEAPP_ADVMODE_FAST);
 			}
 			break;
 	}
@@ -911,9 +910,9 @@ int main()
 {
 	HardwareInit();
 
-    BleAppInit((const BleAppCfg_t *)&s_BleAppCfg);//, true);
+    BtAppInit(&s_BleAppCfg);//, true);
 
-	BleAppRun();
+	BtAppRun();
 
     return 0;
 }

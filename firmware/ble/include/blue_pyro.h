@@ -39,6 +39,8 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __BLUEPYRO_H__
 #define __BLUEPYRO_H__
 
+#include <stdint.h>
+
 #define BLUEPYRO_ADV_NAME_MAXLEN		8
 
 #pragma pack(push, 1)
@@ -46,9 +48,10 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 typedef struct __BluePyro_AdvData {
 	uint8_t Type;			//!< Advertisement data type BLEADV_MANDATA_TYPE_APP
 	uint8_t MotionDet;		//!< Motion detection event : 1 - Motion detected, 0 - No motion
-	PyroCfg_reg_t PyroCfg;
+	PyroCfgReg_t PyroCfg;
 	uint8_t Name[BLUEPYRO_ADV_NAME_MAXLEN];		//!< Location name
-} BLUEPYRO_ADVDATA;
+} BluePyroAdvData_t;
+//BLUEPYRO_ADVDATA;
 #pragma pack(pop)
 
 // UUID : a0080000-01fb-4109-8a0a-1816898a6725
