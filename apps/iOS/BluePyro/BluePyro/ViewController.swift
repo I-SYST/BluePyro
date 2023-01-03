@@ -77,7 +77,7 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
         mDFUButton.transform = CGAffineTransform(scaleX: ratio, y: ratio)
         mDFUButton.frame = CGRect(x: 0, y: ISYSTLogo.frame.height + 50, width: screenSize.width/3 - 10, height: mDFUButton.frame.height)
         AppNameLabel.transform = CGAffineTransform(scaleX: ratio, y: ratio)
-        AppNameLabel.frame = CGRect(x: mDFUButton.frame.width + 5, y: ISYSTLogo.frame.height + 50, width: screenSize.width/3 + 10, height: AppNameLabel.frame.height)
+        AppNameLabel.frame = CGRect(x: screenSize.width/2 -  AppNameLabel.frame.width/2, y: ISYSTLogo.frame.height + 50, width: screenSize.width/3 + 10, height: AppNameLabel.frame.height)
         mUpdateButton.transform = CGAffineTransform(scaleX: ratio, y: ratio)
         mUpdateButton.frame = CGRect(x: mDFUButton.frame.width + AppNameLabel.frame.width, y: ISYSTLogo.frame.height + 50, width: screenSize.width/3 , height: mUpdateButton.frame.height)
         mNameEdit.transform = CGAffineTransform(scaleX: ratio, y: ratio)
@@ -155,13 +155,13 @@ class ViewController: UIViewController,  CBCentralManagerDelegate, CBPeripheralD
         if let pname = peripheral.name {
             if pname == "BluePyro" {
                 //self.bleCentral.stopScan()
-                
+                print(pname)
                 self.mBluePyro = peripheral
                 self.mBluePyro.delegate = self
                 
                 
                 
-                //print(self.mBluePyro.identifier)
+                print(self.mBluePyro.identifier)
                 //self.bleCentral.connect(self.mBluePyro, options: nil)
                 if advertisementData[CBAdvertisementDataManufacturerDataKey] == nil {
                     return

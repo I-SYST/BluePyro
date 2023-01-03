@@ -15,17 +15,15 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="10dp"
         android:background="#000000"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.282"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo_180" />
 
     <EditText
         android:id="@+id/idTextView"
-        android:layout_width="250dp"
+        android:layout_width="320dp"
         android:layout_height="60dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="5dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="Name : 0"
@@ -42,8 +40,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="5dp"
         android:text="Select device :"
-        android:textAlignment="textEnd"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/idTextView" />
     <Spinner
@@ -64,25 +61,21 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="5dp"
         android:text="Blind Time :"
-        android:textAlignment="textEnd"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <EditText
         android:id="@+id/tresholdLabel"
-        android:layout_width="0dp"
+        android:layout_width="150dp"
         android:layout_height="45dp"
         android:layout_marginStart="8dp"
-
         android:layout_marginTop="5dp"
         android:layout_marginEnd="24dp"
         android:inputType="numberDecimal"
         android:text="5"
         android:textAlignment="center"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/textView6"
         app:layout_constraintTop_toBottomOf="@+id/spinnerDevice" />
 
@@ -102,8 +95,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="5dp"
         android:text="Pulse Counter :"
-        android:textAlignment="textEnd"
-        android:textSize="24sp"
+
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
@@ -114,8 +107,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="5dp"
         android:text="HPF Cut-off :"
-        android:textAlignment="textEnd"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
@@ -126,8 +118,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="5dp"
         android:text="Threshold :"
-        android:textAlignment="textEnd"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerDevice" />
 
@@ -135,8 +126,8 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
         android:text="Modify"
         app:layout_constraintStart_toEndOf="@+id/titleTextView"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
@@ -145,11 +136,12 @@
         android:id="@+id/dfu"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="15dp"
         android:layout_marginEnd="10dp"
+        android:layout_marginStart="20dp"
         android:text="DFU"
-        app:layout_constraintEnd_toStartOf="@+id/titleTextView"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <TextView
         android:id="@+id/textView3"
@@ -158,14 +150,13 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="5dp"
         android:text="Window Time :"
-        android:textAlignment="textEnd"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <EditText
         android:id="@+id/btimeLabel"
-        android:layout_width="0dp"
+        android:layout_width="150dp"
         android:layout_height="45dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
@@ -173,15 +164,13 @@
         android:inputType="numberDecimal"
         android:text="3"
         android:textAlignment="center"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/textView8"
         app:layout_constraintTop_toBottomOf="@+id/tresholdLabel" />
 
     <EditText
         android:id="@+id/pulsecntLabel"
-        android:layout_width="0dp"
+        android:layout_width="150dp"
         android:layout_height="45dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
@@ -189,9 +178,7 @@
         android:inputType="numberDecimal"
         android:text="2"
         android:textAlignment="center"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/btimeLabel" />
 
@@ -202,8 +189,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="5dp"
         android:text="Pulse Mode :"
-        android:textAlignment="textEnd"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -224,7 +210,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="30dp"
         android:text="Detect Count :"
-        android:textAlignment="textEnd"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
     <TextView
@@ -265,14 +250,14 @@
         android:text="@string/hyperlink"
         android:textAlignment="center"
         android:textSize="18sp"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginTop="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView9" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
         />
     <EditText
         android:id="@+id/wtimeLabel"
-        android:layout_width="0dp"
+        android:layout_width="150dp"
         android:layout_height="45dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="5dp"
@@ -280,9 +265,7 @@
         android:inputType="numberDecimal"
         android:text="0"
         android:textAlignment="center"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/pulsecntLabel" />
 
@@ -308,9 +291,7 @@
         android:textColor="#2196F3"
         android:textSize="30sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/dfu"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
