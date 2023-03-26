@@ -46,7 +46,7 @@ SOFTWARE.
 #include "istddef.h"
 #include "idelay.h"
 #include "bluetooth/bt_app.h"
-#include "bluetooth/bt_dev.h"
+//#include "bluetooth/bt_dev.h"
 #include "bluetooth/bt_gatt.h"
 #include "bluetooth/blueio_blesrvc.h"
 //#include "blueio_board.h"
@@ -223,7 +223,7 @@ static const int s_BleUartNbChar = sizeof(g_UartChars) / sizeof(BtGattChar_t);
 
 /// Service definition
 const BtGattSrvcCfg_t s_UartSrvcCfg = {
-	.SecType = BTDEV_SECTYPE_NONE,		// Secure or Open service/char
+	.SecType = BTGAP_SECTYPE_NONE,		// Secure or Open service/char
 	.bCustom = true,
 	.UuidBase = BLE_UART_UUID_BASE,		// Base UUID
 	.UuidSrvc = BLE_UART_UUID_SERVICE,		// Service UUID
@@ -273,7 +273,7 @@ uint8_t g_LWrBuffer[512];
 
 /// Service definition
 const BtGattSrvcCfg_t s_BluePyroSrvcCfg = {
-	.SecType = BTDEV_SECTYPE_NONE,		// Secure or Open service/char
+	.SecType = BTGAP_SECTYPE_NONE,		// Secure or Open service/char
 	.bCustom = true,
 	.UuidBase = BLUEPYRO_UUID_BASE,			// Base UUID
 	//.NbUuidBase = 4,
@@ -288,7 +288,7 @@ BtGattSrvc_t g_BluePyroSrvc;
 
 static char s_FirmVers[16] = "00.00.200101";
 
-const BtDevInfo_t s_BluePyroDevDesc = {
+const BtAppDevInfo_t s_BluePyroDevDesc = {
 	MODEL_NAME,       		// Model name
 	MANUFACTURER_NAME,		// Manufacturer name
 	"123",					// Serial number string
@@ -296,8 +296,8 @@ const BtDevInfo_t s_BluePyroDevDesc = {
 	"0.0",					// Hardware version string
 };
 
-const BtDevCfg_t s_BleAppCfg = {
-	.Role = BTDEV_ROLE_PERIPHERAL,
+const BtAppCfg_t s_BleAppCfg = {
+	.Role = BTAPP_ROLE_PERIPHERAL,
 	//.ClkCfg = { NRF_CLOCK_LF_SRC_XTAL, 0, 0, NRF_CLOCK_LF_ACCURACY_20_PPM},
 	.CentLinkCount = 0, 				// Number of central link
 	.PeriLinkCount = 1, 				// Number of peripheral link
@@ -312,8 +312,8 @@ const BtDevCfg_t s_BleAppCfg = {
 	.AdvManDataLen = sizeof(BluePyroAdvData_t),	// Length of manufacture specific data
 	.pSrManData = NULL,
 	.SrManDataLen = 0,
-	.SecType = BTDEV_SECTYPE_NONE,//BLEAPP_SECTYPE_STATICKEY_MITM,//BLEAPP_SECTYPE_NONE,    // Secure connection type
-	.SecExchg = BTDEV_SECEXCHG_NONE,	// Security key exchange
+	.SecType = BTGAP_SECTYPE_NONE,//BLEAPP_SECTYPE_STATICKEY_MITM,//BLEAPP_SECTYPE_NONE,    // Secure connection type
+	.SecExchg = BTAPP_SECEXCHG_NONE,	// Security key exchange
 	.pAdvUuid = NULL,      			// Service uuids to advertise
 	//.NbAdvUuid = 0, 					// Total number of uuids
 	.AdvInterval = APP_ADV_INTERVAL,	// Advertising interval in msec
@@ -322,8 +322,8 @@ const BtDevCfg_t s_BleAppCfg = {
 										// slow interval on adv timeout and advertise until connected
 	.ConnIntervalMin = MIN_CONN_INTERVAL,
 	.ConnIntervalMax = MAX_CONN_INTERVAL,
-	.ConnLedPort = BLUEIO_CONNECT_LED_PORT,// Led port nuber
-	.ConnLedPin = BLUEIO_CONNECT_LED_PIN,// Led pin number
+	.ConnLedPort = BLUEPYRO_CR24S_M3225_LED1_PORT,// Led port nuber
+	.ConnLedPin = BLUEPYRO_CR24S_M3225_LED1_PIN,// Led pin number
 	.TxPower = 0,						// Tx power
 	.SDEvtHandler = NULL				// RTOS Softdevice handler
 };
@@ -540,10 +540,10 @@ void AdvChedHandler(void * p_event_data, uint16_t event_size)
 {
 	if (isConnected() == false)
 	{
-		if (BtDevAdvManDataSet((uint8_t*)&g_AdvData, sizeof(g_AdvData), NULL, 0) == false)
+		if (BtAppAdvManDataSet((uint8_t*)&g_AdvData, sizeof(g_AdvData), NULL, 0) == false)
 		{
 			g_bAdv = true;
-			BtDevAdvStart();//BLEAPP_ADVMODE_FAST);
+			BtAdvStart();//BLEAPP_ADVMODE_FAST);
 		}
 	}
 }
@@ -575,13 +575,9 @@ void UartTxSrvcCallback(BtGattChar_t *pChar, uint8_t *pData, int Offset, int Len
 	g_Uart.Tx(pData, Len);
 }
 
-void BtAppPeriphEvtUserHandler(uint32_t p_ble_evt, void *pCtx)
+void BtAppPeriphEvtUserHandler(uint32_t Evt, void * const pCtx)
 {
-#ifdef RAW_DATA
-	BtGattEvtHandler(&g_UartBleSrvc, p_ble_evt);
-#endif
-
-    BtGattEvtHandler(&g_BluePyroSrvc, p_ble_evt);
+    BtGattEvtHandler(Evt, pCtx);
 }
 
 void BtDevInitCustomServices()
@@ -589,11 +585,11 @@ void BtDevInitCustomServices()
     bool res;
 
 #ifdef RAW_DATA
-    res = BtDevAddSrvc(&g_UartBleSrvc, &s_UartSrvcCfg);
+    res = BtGattSrvcAdd(&g_UartBleSrvc, &s_UartSrvcCfg);
    // APP_ERROR_CHECK(err_code);
 #endif
 
-    res = BtDevAddSrvc(&g_BluePyroSrvc, &s_BluePyroSrvcCfg);
+    res = BtGattSrvcAdd(&g_BluePyroSrvc, &s_BluePyroSrvcCfg);
     //APP_ERROR_CHECK(err_code);
 
     BtGattCharSetValue(&g_BluePyroSrvc.pCharArray[0], (uint8_t*)&g_AppData, sizeof(APP_DATA));
@@ -689,7 +685,7 @@ void PrintDataChedHandler(void * p_event_data, uint16_t event_size)
 	g_Uart.printf(buff);
 
 #ifdef RAW_DATA
-	BtDevNotify(&g_UartBleSrvc.pCharArray[0], (uint8_t*)buff, strlen(buff) + 1);
+	BtAppNotify(&g_UartBleSrvc.pCharArray[0], (uint8_t*)buff, strlen(buff) + 1);
 #endif
 
 	g_PacketCnt++;
@@ -781,7 +777,7 @@ void UartRxChedHandler(void * p_event_data, uint16_t event_size)
 			IOPinSet(LED2_B_PORT, LED2_B_PIN);
 			//if (g_bAdvertising == true)
 			{
-				BtDevAdvStop();
+				BtAdvStop();
 				g_bAdvertising = false;
 			}
 			break;
@@ -801,7 +797,7 @@ void UartRxChedHandler(void * p_event_data, uint16_t event_size)
 			//if (g_bAdvertising == false)
 			{
 				g_bAdvertising = true;
-				BtDevAdvStart();//BLEAPP_ADVMODE_FAST);
+				BtAdvStart();//BLEAPP_ADVMODE_FAST);
 			}
 			break;
 	}
