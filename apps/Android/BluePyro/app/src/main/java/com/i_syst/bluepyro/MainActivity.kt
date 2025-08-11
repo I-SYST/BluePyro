@@ -21,18 +21,14 @@ import java.util.*
 import android.widget.ArrayAdapter
 
 import java.util.ArrayList
-import android.R.attr.name
 import android.widget.AdapterView
 
 import android.widget.AdapterView.OnItemSelectedListener
 
-import android.R.attr.name
-import android.bluetooth.BluetoothDevice
-
-import android.widget.Toast
-
-import android.R.attr.name
+import android.content.pm.PackageManager
 import android.text.method.LinkMovementMethod
+import androidx.annotation.RequiresPermission
+import androidx.core.app.ActivityCompat
 
 
 internal class Device(var deviceName: String, var deviceAddress: String) {
@@ -96,26 +92,23 @@ class MainActivity : AppCompatActivity() {
     var mWeight = 0F
     var mDetCnt = 0
     var mAdvCnt = 0
-    //var mName = ByteArray(8)
     var mModify : Boolean = false
     var mButtonClicked = 0
     var mDeviceSelected : Boolean = false
+    private val REQUEST_BLUETOOTH_SCAN_PERMISSION = 100
 
     private val mGattCallback = object : BluetoothGattCallback() {
-        override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {//Change in connection state
-            if (newState == BluetoothProfile.STATE_CONNECTED) {//See if we are connected
-                //Log.i(TAG, "**ACTION_SERVICE_CONNECTED**$status")
-                //broadcastUpdate(BLEConstants.ACTION_GATT_CONNECTED)//Go broadcast an intent to say we are connected
+        @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+        override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+            if (newState == BluetoothProfile.STATE_CONNECTED) {
                 gatt.discoverServices()
-                //mBluetoothGatt?.discoverServices()//Discover services on connected BLE device
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {//See if we are not connectedLog.i(TAG, "**ACTION_SERVICE_DISCONNECTED**" + status);
-                //broadcastUpdate(BLEConstants.ACTION_GATT_DISCONNECTED)//Go broadcast an intent to say we are disconnected
+            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                // Handle disconnection
             }
         }
-        override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {              //BLE service discovery complete
-            if (status == BluetoothGatt.GATT_SUCCESS) {                                 //See if the service discovery was successful
-                //Log.i(TAG, "**ACTION_SERVICE_DISCOVERED**$status")
-                //Get the characteristic from the discovered gatt server
+        @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+        override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
                 if (mButtonClicked == 0) {
                     val service = gatt.getService(BLUEPYRO_SERVICE_UUID)
                     mCfgChar = service.getCharacteristic(BLUEPYRO_CFGCHAR_UUID)
@@ -125,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                     val btime = Integer.valueOf(mBTimeLabel?.text.toString()) and 0xf
                     val wtime = Integer.valueOf(mWinTimeLabel?.text.toString()) and 3
                     val hpf =
-                        if ((findViewById<View>(R.id.switchHpf) as Switch).isChecked()) 1 else 0 //Integer.valueOf(mHpfLabel?.text.toString()) and 1
+                        if ((findViewById<View>(R.id.switchHpf) as Switch).isChecked()) 1 else 0
                     val pcnt = Integer.valueOf(mPulseCntLabel?.text.toString()) and 3
                     val pmode =
                         if ((findViewById<View>(R.id.switchPulseMode) as Switch).isChecked()) 1 else 0
@@ -160,194 +153,96 @@ class MainActivity : AppCompatActivity() {
                     val res = mBleGatt!!.writeCharacteristic(mDfuChar)
                 }
                 Log.i(" ssss" , " ddd")
-                //broadcastUpdate(BLEConstants.ACTION_GATT_SERVICES_DISCOVERED)                       //Go broadcast an intent to say we have discovered services
-            } else {                                                                      //Service discovery failed so log a warning
-                //Log.i(TAG, "onServicesDiscovered received: $status")
+            } else {
+                // Service discovery failed
             }
         }
-        //For information only. This application uses Indication to receive updated characteristic data, not Read
-        override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) { //A request to Read has completed
-//String value = characteristic.getStringValue(0);
-//int value = characteristic.getIntValue(BluetoothGattCharacteristic.FORMAT_UINT32, 0);
+        // ... (rest of onCharacteristicRead, onCharacteristicWrite, onCharacteristicChanged)
+        override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
             val values = characteristic.value
             val clearValue = byteArrayOf(255.toByte())
             var value = 0
             if (null != values) {
-                //Log.i(TAG, "ACTION_DATA_READ VALUE: " + values.size)
-                //Log.i(TAG, "ACTION_DATA_READ VALUE: " + (values[0] and 0xFF.toByte()))
-                //value = (values[0] and 0xFF.toByte()).toInt()
             }
-            //BLEConnectionManager.writeEmergencyGatt(clearValue)
             if (status == BluetoothGatt.GATT_SUCCESS) {
-//See if the read was successful
-                //Log.i(TAG, "**ACTION_DATA_READ**$characteristic")
-                //broadcastUpdate(BLEConstants.ACTION_DATA_AVAILABLE, characteristic)                 //Go broadcast an intent with the characteristic data
             } else {
-                //Log.i(TAG, "ACTION_DATA_READ: Error$status")
             }
         }
-        //For information only. This application sends small packets infrequently and does not need to know what the previous write completed
-        override fun onCharacteristicWrite(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) { //A request to Write has completed
-            if (status == BluetoothGatt.GATT_SUCCESS) {                                 //See if the write was successful
-                //Log.e(TAG, "**ACTION_DATA_WRITTEN**$characteristic")
-                //broadcastUpdate(BLEConstants.ACTION_DATA_WRITTEN, characteristic)                   //Go broadcast an intent to say we have have written data
+        @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+        override fun onCharacteristicWrite(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
                 mBleGatt?.disconnect()
                 mModify = false
             }
         }
         override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic?) {
             if (characteristic != null && characteristic.properties == BluetoothGattCharacteristic.PROPERTY_NOTIFY) {
-                //Log.e(TAG, "**THIS IS A NOTIFY MESSAGE")
             }
             if (characteristic != null) {
-                //broadcastUpdate(BLEConstants.ACTION_DATA_AVAILABLE, characteristic)
-            }                     //Go broadcast an intent with the characteristic data
+            }
         }
     }
-        //private var mAdapter: com.i_syst.blystscale.MainActivity.DeviceListAdapter? = null
-/*
-    private val mGattCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
-        override fun onConnectionStateChange(
-            gatt: BluetoothGatt, status: Int,
-            newState: Int
-        ) {
-            var intentAction: String
-            if (newState == BluetoothProfile.STATE_CONNECTED) {
-                gatt.discoverServices()
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-            }
-        }
 
-        // New services discovered
-        override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-                val services = gatt.services
-                val service =
-                    gatt.getService(BLUEPYRO_SERVICE_UUID) ?: return
-                mCfgChar = service.getCharacteristic(BLUEPYRO_CFGCHAR_UUID)
-                mCfgChar?.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-
-
-               // val data_characteristic =
-               //     service.getCharacteristic(MainActivity.BLUEIO_RDCHAR_UUID)
-               // val descriptors =
-               //     data_characteristic.descriptors
-               // val descriptor = descriptors[0]
-               // descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-               // gatt.writeDescriptor(descriptor)
-               // gatt.setCharacteristicNotification(data_characteristic, true)
-            } else {
-            }
-        }
-
-        // Result of a characteristic read operation
-        override fun onCharacteristicRead(
-            gatt: BluetoothGatt,
-            characteristic: BluetoothGattCharacteristic,
-            status: Int
-        ) {
-            if (status == BluetoothGatt.GATT_SUCCESS) {
-            }
-        }
-/*
-        override fun onCharacteristicChanged(
-            gatt: BluetoothGatt,
-            characteristic: BluetoothGattCharacteristic
-        ) {
-            val data = characteristic.value
-            Log.i("onCharacteristicChanged", "called")
-            when (data[0]) {
-                MainActivity.BLEADV_MANDATA_TYPE_TPH -> {
-                    val press = ByteBuffer.wrap(
-                        data,
-                        1,
-                        4
-                    ).order(ByteOrder.LITTLE_ENDIAN).int.toDouble() / 1000.0
-                    val temp = ByteBuffer.wrap(
-                        data,
-                        5,
-                        2
-                    ).order(ByteOrder.LITTLE_ENDIAN).short.toDouble() / 100.0
-                    val humi = ByteBuffer.wrap(
-                        data,
-                        7,
-                        2
-                    ).order(ByteOrder.LITTLE_ENDIAN).short.toDouble() / 100.0
-                    var s = String.format("%.2f", press)
-                    mPressLabel.setText(s)
-                    mPressLabel.getRootView().postInvalidate()
-                    s = String.format("%.2f", temp)
-                    mTempLabel.setText(s)
-                    mTempLabel.getRootView().postInvalidate()
-                    s = String.format("%.0f", humi)
-                    mHumiLabel.setText(s)
-                    mHumiLabel.getRootView().postInvalidate()
-                }
-                MainActivity.BLEADV_MANDATA_TYPE_GAS -> {
-                    val GasRes =
-                        ByteBuffer.wrap(data, 1, 4).order(ByteOrder.LITTLE_ENDIAN)
-                            .int
-                    val AirQ =
-                        ByteBuffer.wrap(data, 5, 2).order(ByteOrder.LITTLE_ENDIAN)
-                            .short
-                    s = String.format("%d", AirQ)
-                    mAirQIdxLabel.setText(s)
-                }
-                MainActivity.BLEADV_MANDATA_TYPE_ADC -> {
-                    val v = ByteBuffer.wrap(
-                        data,
-                        5,
-                        4
-                    ).order(ByteOrder.LITTLE_ENDIAN).float
-                    s = String.format("%.2f", v)
-                    mAdcLabel.setText(s)
-                }
-                MainActivity.BLEADV_MANDATA_SN -> {
-                }
-            }
-        }
-        */
-
-    }
-*/
-
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        requestPermissions(
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ), 1
-        )
-        mCtx = getBaseContext()
-        val bluetoothManager =
-            getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
 
+        // Request runtime permissions for ACCESS_FINE_LOCATION and BLUETOOTH_SCAN
+        // For Android 12+ (API 31+), BLUETOOTH_SCAN and BLUETOOTH_CONNECT are needed
+        if (checkSelfPermission(Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT),
+                REQUEST_BLUETOOTH_SCAN_PERMISSION)
+        } else {
+            // Permissions are already granted, proceed with Bluetooth setup
+            setupBluetooth()
+        }
+    }
+
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_BLUETOOTH_SCAN_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, proceed with Bluetooth setup
+                setupBluetooth()
+            } else {
+                // Permission denied, handle gracefully (e.g., show a message and disable functionality)
+                Log.e("Permissions", "Bluetooth scan permission denied.")
+            }
+        }
+    }
+
+    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
+    private fun setupBluetooth() {
+        mCtx = baseContext
+        val bluetoothManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
 
         mUpdateButton = findViewById<View>(R.id.button) as Button
         mUpdateButton?.setOnClickListener {
-                // Code here executes on main thread after user presses button
-            //Log.d("onButtonClick")
-
-            if (mModify == true) {
+            if (mModify) {
                 mButtonClicked = 0
                 if (mBluetoothDevice != null) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        return@setOnClickListener
+                    }
                     mBleGatt = mBluetoothDevice?.connectGatt(mCtx, false, mGattCallback)
                 }
                 mUpdateButton?.text = "MODIFY"
-            }
-            else {
-                mModify = true;
+            } else {
+                mModify = true
                 mUpdateButton?.text = "UPDATE"
             }
         }
 
         mDFUButton = findViewById<View>(R.id.dfu) as Button
-        mDFUButton?.setOnClickListener {
+        mDFUButton?.setOnClickListener @androidx.annotation.RequiresPermission(android.Manifest.permission.BLUETOOTH_CONNECT) {
             mButtonClicked = 1
             if (mBluetoothDevice != null) {
-                mBleGatt = mBluetoothDevice?.connectGatt(mCtx, false, mGattCallback)
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
+                    mBleGatt = mBluetoothDevice?.connectGatt(mCtx, false, mGattCallback)
+                }
             }
         }
 
@@ -357,7 +252,6 @@ class MainActivity : AppCompatActivity() {
         dataAdapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         mDeviceSpiner!!.adapter = dataAdapter
 
-        
         mDeviceSpiner!!.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(
                 parentView: AdapterView<*>?,
@@ -365,68 +259,49 @@ class MainActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                if(mDeviceSelected) {
-
+                if (mDeviceSelected) {
                     if (mDeviceList != null) {
                         val spinnerDevice: Device = mDeviceSpiner!!.selectedItem as Device
-
                         val address = spinnerDevice.deviceAddress
                         val name = spinnerDevice.deviceName
                         mIdLabel?.text = name
                         mBluetoothDevice = mBluetoothAdapter!!.getRemoteDevice(address)
-
-                        mModify = true;
+                        mModify = true
                         mUpdateButton?.text = "UPDATE"
                     }
-                    //mDeviceSelected = false
-                }else{
+                } else {
                     mDeviceSelected = true
                 }
             }
 
-            override fun onNothingSelected(parentView: AdapterView<*>?) {
-
-
-            }
+            override fun onNothingSelected(parentView: AdapterView<*>?) {}
         }
 
         mPrivacyPolicyLabel = findViewById<View>(R.id.privacy_policy) as TextView
         mPrivacyPolicyLabel!!.movementMethod = LinkMovementMethod.getInstance()
         mPulseCntLabel = findViewById<View>(R.id.pulsecntLabel) as TextView
         mWinTimeLabel = findViewById<View>(R.id.wtimeLabel) as TextView
-        //mHpfLabel = findViewById<View>(R.id.hpfLabel) as TextView
         mThreshLabel = findViewById<View>(R.id.tresholdLabel) as TextView
         mBTimeLabel = findViewById<View>(R.id.btimeLabel) as TextView
         mTitleLabel = findViewById<View>(R.id.titleTextView) as TextView
         mIdLabel = findViewById<View>(R.id.idTextView) as TextView
         mRawLabel = findViewById<TextView>(R.id.countLabel) as TextView
         mAdvCountLabel = findViewById<TextView>(R.id.AdvCountLabel) as TextView
-/*        mAdapter = DeviceListAdapter(this, R.layout.device_list_content)
-        val listView =
-            findViewById<View>(R.id.device_listview) as ListView
-        listView.adapter = mAdapter
-        listView.onItemClickListener =
-            OnItemClickListener { parent, view, position, id ->
-                val adapter = parent.adapter as DeviceListAdapter
-                mLEScanner!!.stopScan(mScanCallback)
-                val bledev = adapter.getItem(position) as BluetoothDevice
-                mBleGatt = bledev.connectGatt(baseContext, false, mGattCallback)
-            }
-*/
+
         mBluetoothAdapter = bluetoothManager.adapter
         mLEScanner = mBluetoothAdapter?.bluetoothLeScanner
-        mLEScanner?.startScan(mScanCallback)
-/*
-        mDfuBut = findViewById<View>(R.id.butDFU) as Button
-        mDfuBut.setOnClickListener(View.OnClickListener {
-            // Code here executes on main thread after user presses button
-            val cmd = byteArrayOf(0xff.toByte())
-            var res = mWrChar!!.setValue(cmd)
-            res = mBleGatt!!.writeCharacteristic(mWrChar)
-        })*/
+
+        // ADD THIS CHECK:
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED) {
+            mLEScanner?.startScan(mScanCallback)
+        } else {
+            // Handle the case where permission is still not granted (should not happen, but is good practice)
+            Log.e("Permissions", "Failed to start scan: BLUETOOTH_SCAN permission not granted.")
+        }
     }
 
     private val mScanCallback: ScanCallback = object : ScanCallback() {
+        @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
         override fun onScanResult(
             callbackType: Int,
             result: ScanResult
@@ -436,8 +311,6 @@ class MainActivity : AppCompatActivity() {
             val device = result.device
             val scanRecord = result.scanRecord
             val scanData = scanRecord!!.bytes
-            //val name = scanRecord.deviceName
-
             val address = device.address
             val name = device.name
             if (name != null) {
@@ -446,48 +319,11 @@ class MainActivity : AppCompatActivity() {
                     val deviceID: Long = 0
                     val manuf = scanRecord.getManufacturerSpecificData(0x0177)
 
-                    if (manuf == null)// || manuf.size < 1)
-                        return
-
-                    if (manuf.size < 1)
+                    if (manuf == null || manuf.size < 1)
                         return
 
                     @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
                     when (manuf[0]) {
-/*                BLEADV_MANDATA_TYPE_TPH -> {
-                    val press = ByteBuffer.wrap(
-                        manuf,
-                        1,
-                        4
-                    ).order(ByteOrder.LITTLE_ENDIAN).int.toDouble() / 1000.0
-                    val temp = ByteBuffer.wrap(
-                        manuf,
-                        5,
-                        2
-                    ).order(ByteOrder.LITTLE_ENDIAN).short.toDouble() / 100.0
-                    val humi = ByteBuffer.wrap(
-                        manuf,
-                        7,
-                        2
-                    ).order(ByteOrder.LITTLE_ENDIAN).short.toDouble() / 100.0
-                    var s = String.format("%.2f", press)
-                    mPressLabel.setText(s)
-                    mPressLabel.getRootView().postInvalidate()
-                    s = String.format("%.2f", temp)
-                    mTempLabel.setText(s)
-                    mTempLabel.getRootView().postInvalidate()
-                    s = String.format("%.0f", humi)
-                    mHumiLabel.setText(s)
-                    mHumiLabel.getRootView().postInvalidate()
-                }
-                BLEADV_MANDATA_TYPE_GAS -> {
-                    val GasRes = ByteBuffer.wrap(manuf, 1, 4)
-                        .order(ByteOrder.LITTLE_ENDIAN).int
-                    val AirQ = ByteBuffer.wrap(manuf, 5, 2)
-                        .order(ByteOrder.LITTLE_ENDIAN).short
-                    s = String.format("%d", AirQ)
-                    mAirQIdxLabel.setText(s)
-                }*/
                         BLEADV_MANDATA_TYPE_ADC -> {
                             val v = ByteBuffer.wrap(
                                 manuf,
@@ -496,7 +332,6 @@ class MainActivity : AppCompatActivity() {
                             ).order(ByteOrder.LITTLE_ENDIAN).int
                             var s = String.format("%x", v)
                             mRawLabel?.text = s
-
                         }
                         BLEADV_MANDATA_TYPE_APP -> {
                             val v = String(manuf, 6, manuf.size - 6, Charset.defaultCharset())
@@ -507,7 +342,6 @@ class MainActivity : AppCompatActivity() {
                                 } else {
                                     if (!mDeviceList!!.contains(Device(name, address))) {
                                         mDeviceList!!.add(Device(name, address))
-
                                     } else {
                                         mDeviceList!!.removeAt(
                                             mDeviceList!!.indexOf(
@@ -518,34 +352,17 @@ class MainActivity : AppCompatActivity() {
                                             )
                                         )
                                         mDeviceList!!.add(Device(name, address))
-
                                     }
-
                                 }
                                 mIdLabel?.text = v
                                 dataAdapter!!.notifyDataSetChanged()
                             }
-                            //val v = ByteBuffer.wrap(
-                            //    manuf,
-                            //    1,
-                            //    8
-                            //).order(ByteOrder.LITTLE_ENDIAN).toString()
-                            //val mdet = ByteBuffer.wrap(
-                            //    manuf,
-                            //    2,
-                            //    8
-                            //).order(ByteOrder.LITTLE_ENDIAN).ByteArray
-                            //mName = manuf.copyOfRange(2, 10)
-
                             mAdvCnt++
-
                             if (manuf[1].toInt() == 0) {
                                 mIdLabel?.setBackgroundColor(0xffffffff.toInt())
-
                             } else {
                                 mDetCnt++
                                 mIdLabel?.setBackgroundColor(0xffff4444.toInt())
-
                                 var s = String.format("%d", mDetCnt)
                                 mRawLabel?.text = s
                             }
@@ -555,7 +372,6 @@ class MainActivity : AppCompatActivity() {
                                 var swpm = findViewById<View>(R.id.switchPulseMode) as Switch
                                 val p = manuf[2].toUInt() and 0x1u
                                 if (p != 0u) {
-                                    // Pulse mode
                                     swpm.setChecked(true)
                                 } else {
                                     swpm.setChecked(false)
@@ -564,7 +380,6 @@ class MainActivity : AppCompatActivity() {
                                 var swhpf = findViewById<View>(R.id.switchHpf) as Switch
                                 val hpf = manuf[2].toUInt() and 4u
                                 if (hpf != 0u) {
-                                    // HPF Cut off
                                     swhpf.setChecked(true)
                                 } else {
                                     swhpf.setChecked(false)
@@ -584,23 +399,10 @@ class MainActivity : AppCompatActivity() {
 
                                 var s = String.format("%d", mAdvCnt)
                                 mAdvCountLabel?.text = s
-                                //s = String.format("%d", mAdvCnt)//(v shr 14) and 0x3fff)
                             }
-                            //mPirLabel?.text = s
-                            //s = v.toString()
-                            //s = String.format("%d", v and 0x3FFF)
-                            //mTempLabel?.setText(s)
-                            //s = String.format("%d", v and 0x3FFF)
-                            //mTempLabel?.setText(s)
+                            mBluetoothDevice = device
                         }
-
-
                     }
-                    //val listView =
-                    //    findViewById<View>(R.id.device_listview) as ListView
-                    //mAdapter.addItem(device)
-                    //mAdapter.notifyDataSetChanged()
-                    mBluetoothDevice = device
                 }
             }
         }
