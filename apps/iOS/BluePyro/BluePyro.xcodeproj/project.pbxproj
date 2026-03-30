@@ -17,6 +17,7 @@
 		33FD290226DD16140022E9C7 /* BluePyroUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33FD290126DD16140022E9C7 /* BluePyroUITests.swift */; };
 		33FD291226DD1AD50022E9C7 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 33FD291126DD1AD50022E9C7 /* logo.png */; };
 		E47845BE295FD731000F1BB0 /* i-syst-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = E47845BD295FD731000F1BB0 /* i-syst-logo.png */; };
+		E4AE26F12F7ABB9100D9346D /* i_syst_logo 2.png in Resources */ = {isa = PBXBuildFile; fileRef = E4AE26F02F7ABB9100D9346D /* i_syst_logo 2.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		33FD290326DD16140022E9C7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		33FD291126DD1AD50022E9C7 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		E47845BD295FD731000F1BB0 /* i-syst-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "i-syst-logo.png"; sourceTree = "<group>"; };
+		E4AE26F02F7ABB9100D9346D /* i_syst_logo 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "i_syst_logo 2.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				E47845BD295FD731000F1BB0 /* i-syst-logo.png */,
+				E4AE26F02F7ABB9100D9346D /* i_syst_logo 2.png */,
 				33FD291126DD1AD50022E9C7 /* logo.png */,
 				33FD28DF26DD16130022E9C7 /* AppDelegate.swift */,
 				33FD28E126DD16130022E9C7 /* SceneDelegate.swift */,
@@ -238,6 +241,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E47845BE295FD731000F1BB0 /* i-syst-logo.png in Resources */,
+				E4AE26F12F7ABB9100D9346D /* i_syst_logo 2.png in Resources */,
 				33FD28EC26DD16140022E9C7 /* LaunchScreen.storyboard in Resources */,
 				33FD291226DD1AD50022E9C7 /* logo.png in Resources */,
 				33FD28E926DD16140022E9C7 /* Assets.xcassets in Resources */,
