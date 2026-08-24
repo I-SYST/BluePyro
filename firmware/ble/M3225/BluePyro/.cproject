@@ -108,8 +108,10 @@
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../external/nrfx/bsp/stable/mdk&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/ble/common&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/fds&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/fstorage&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/scheduler&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/experimental_section_vars&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/util&quot;"/>
@@ -281,8 +283,10 @@
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../external/nrfx/bsp/stable/mdk&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/ble/common&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/fds&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/fstorage&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/scheduler&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/experimental_section_vars&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/util&quot;"/>
@@ -456,8 +460,10 @@
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/ARM/CMSIS/Core/Include&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../IOsonata/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../external/nrfx/bsp/stable/mdk&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/ble/common&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/fds&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/fstorage&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/scheduler&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/experimental_section_vars&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../../../../../external/nRF5_SDK/components/libraries/util&quot;"/>
